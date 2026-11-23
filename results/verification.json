@@ -1,0 +1,124 @@
+{
+ "checks": [
+  {
+   "computed": 0.0031332853,
+   "id": "V1",
+   "published": 0.0031,
+   "source": "S1 Cl. 14.2.1.2",
+   "tolerance": "1.1% (the published coefficient is rounded to two figures)",
+   "what": "LTA coefficient: Smax i / (V D^2) with V in %"
+  },
+  {
+   "computed": 0.31332853,
+   "id": "V2",
+   "published": 0.31,
+   "source": "S3 Eq. 5",
+   "tolerance": "1.1% (rounded to two figures)",
+   "what": "Mair et al. coefficient: Smax K z0 / (Vl D^2) with Vl as a fraction"
+  },
+  {
+   "computed": 2.5066283,
+   "id": "V3",
+   "published": 2.5,
+   "source": "S9 Fig. 8",
+   "tolerance": "0.3% (published as 2.5; exact value sqrt(2 pi))",
+   "what": "Trough volume / (i Smax)"
+  },
+  {
+   "computed": 1.0,
+   "id": "V4",
+   "published": 1.0,
+   "source": "S3 Eq. 3-4",
+   "tolerance": "1e-9",
+   "what": "Numerical trough volume / volume loss"
+  },
+  {
+   "computed": 0.60653066,
+   "id": "V5",
+   "published": 0.61,
+   "source": "S9 section 1.4.6",
+   "tolerance": "0.005",
+   "what": "Settlement at the point of inflexion / Smax"
+  },
+  {
+   "computed": 0.22313016,
+   "id": "V6",
+   "published": 0.22,
+   "source": "S9 Fig. 8",
+   "tolerance": "0.005",
+   "what": "Settlement at the point of maximum hogging curvature (sqrt(3) i) / Smax"
+  },
+  {
+   "computed": 0.60653066,
+   "id": "V7",
+   "published": 0.61,
+   "source": "S4 section 5.5",
+   "tolerance": "0.005",
+   "what": "Maximum horizontal movement / (K Smax)"
+  },
+  {
+   "computed": 0.5,
+   "id": "V8",
+   "published": 0.5,
+   "source": "S3 section 2.3",
+   "tolerance": "1e-12",
+   "what": "Settlement above the face / Smax"
+  },
+  {
+   "computed": 1.0,
+   "id": "V9",
+   "published": 1.0,
+   "source": "S6 Eq. 2.17",
+   "tolerance": "1e-12",
+   "what": "Longitudinal displacement at the face on the centre line x 8 z0 / (VL D^2)"
+  },
+  {
+   "computed": 0.5,
+   "id": "V10",
+   "published": 0.5,
+   "source": "S4 Eq. 8",
+   "tolerance": "1e-12",
+   "what": "Surface K from the subsurface relation at z = 0"
+  },
+  {
+   "computed": [
+    0.053205128,
+    0.079807692,
+    0.15961538,
+    0.31923077
+   ],
+   "id": "V11",
+   "published": [
+    0.05,
+    0.08,
+    0.16,
+    0.32
+   ],
+   "source": "S3 Fig. 4 (values read from the chart)",
+   "tolerance": "0.01 (chart-reading accuracy)",
+   "what": "Damage chart, L/H = 1 hogging: Delta/L (%) on the category boundaries at zero horizontal strain"
+  },
+  {
+   "computed": 0.1542686,
+   "id": "V12",
+   "published": 0.1542686,
+   "source": "S3 Eq. 10",
+   "tolerance": "1e-12",
+   "what": "Diagonal strain for eps_h = eps_d = 0.1%: 0.35 x 0.1 + sqrt(0.065^2 + 0.1^2)"
+  },
+  {
+   "computed": 0.694764,
+   "id": "V13",
+   "published": 0.7,
+   "source": "S5 section 4.5.1",
+   "tolerance": "0.05 (published to one decimal)",
+   "what": "Characteristic volume loss from mean 0.30% and standard deviation 0.24% (%)"
+  }
+ ],
+ "example_tunnel": {
+  "D_m": 6.0,
+  "K": 0.5,
+  "VL_pct": 1.5,
+  "z0_m": 20.0
+ }
+}

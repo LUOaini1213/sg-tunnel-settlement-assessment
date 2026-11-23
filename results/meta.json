@@ -1,0 +1,12 @@
+{
+ "facts": {
+  "sources": 13,
+  "total": 124,
+  "unverified": 13,
+  "verified": 111
+ },
+ "monte_carlo_samples": 400,
+ "python": "3.11",
+ "seed": 20261124,
+ "workbook_building": "B07"
+}

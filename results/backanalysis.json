@@ -1,0 +1,483 @@
+{
+ "cases": [
+  {
+   "axis_depth_m": 23.0,
+   "bootstrap_ci95": {
+    "K": [
+     0.381596,
+     0.733551
+    ],
+    "VL": [
+     0.231536,
+     0.396527
+    ],
+    "n": 400
+   },
+   "centre_marker": {
+    "alert_mm": 9.23093,
+    "first_projection_reaching_alert_at_D": null,
+    "first_review_state_at_D": null,
+    "first_suspension_at_D": null,
+    "sequence": [
+     {
+      "exceeds_stage_prediction": false,
+      "face_minus_array_D": -3,
+      "projected_final_mm": null,
+      "reading_mm": 2.33586,
+      "stage_prediction_mm": 0.103639,
+      "state": "normal"
+     },
+     {
+      "exceeds_stage_prediction": false,
+      "face_minus_array_D": -2,
+      "projected_final_mm": null,
+      "reading_mm": 1.34284,
+      "stage_prediction_mm": 0.329603,
+      "state": "normal"
+     },
+     {
+      "exceeds_stage_prediction": false,
+      "face_minus_array_D": -1,
+      "projected_final_mm": -3.57471,
+      "reading_mm": -0.936004,
+      "stage_prediction_mm": 0.781888,
+      "state": "normal"
+     },
+     {
+      "exceeds_stage_prediction": false,
+      "face_minus_array_D": -0.5,
+      "projected_final_mm": 2.05379,
+      "reading_mm": 0.770013,
+      "stage_prediction_mm": 1.08763,
+      "state": "normal"
+     },
+     {
+      "exceeds_stage_prediction": false,
+      "face_minus_array_D": 0,
+      "projected_final_mm": 2.06247,
+      "reading_mm": 1.03123,
+      "stage_prediction_mm": 1.42173,
+      "state": "normal"
+     },
+     {
+      "exceeds_stage_prediction": false,
+      "face_minus_array_D": 0.5,
+      "projected_final_mm": 3.23246,
+      "reading_mm": 2.02053,
+      "stage_prediction_mm": 1.75583,
+      "state": "normal"
+     },
+     {
+      "exceeds_stage_prediction": false,
+      "face_minus_array_D": 1,
+      "projected_final_mm": 5.51743,
+      "reading_mm": 4.07274,
+      "stage_prediction_mm": 2.06157,
+      "state": "normal"
+     },
+     {
+      "exceeds_stage_prediction": false,
+      "face_minus_array_D": 1.5,
+      "projected_final_mm": 3.64477,
+      "reading_mm": 3.02733,
+      "stage_prediction_mm": 2.31762,
+      "state": "normal"
+     },
+     {
+      "exceeds_stage_prediction": false,
+      "face_minus_array_D": 2,
+      "projected_final_mm": 2.96859,
+      "reading_mm": 2.66849,
+      "stage_prediction_mm": 2.51385,
+      "state": "normal"
+     },
+     {
+      "exceeds_stage_prediction": false,
+      "face_minus_array_D": 3,
+      "projected_final_mm": 3.58817,
+      "reading_mm": 3.48817,
+      "stage_prediction_mm": 2.73982,
+      "state": "normal"
+     },
+     {
+      "exceeds_stage_prediction": false,
+      "face_minus_array_D": 4,
+      "projected_final_mm": 3.53673,
+      "reading_mm": 3.51772,
+      "stage_prediction_mm": 2.81959,
+      "state": "normal"
+     },
+     {
+      "exceeds_stage_prediction": false,
+      "face_minus_array_D": 5,
+      "projected_final_mm": 5.24721,
+      "reading_mm": 5.24345,
+      "stage_prediction_mm": 2.83948,
+      "state": "normal"
+     }
+    ],
+    "suspension_mm": 13.187
+   },
+   "chainage_m": 100.0,
+   "departure_from_expected": {
+    "chi2": 16.7976,
+    "direction": "above",
+    "dof": 22,
+    "flagged": false,
+    "max_abs_z": 1.91299,
+    "p_value": 0.774432
+   },
+   "design": {
+    "K": 0.45,
+    "VL": 1.0
+   },
+   "estimate": {
+    "K": 0.516753,
+    "K_ci95": [
+     0.352725,
+     0.68078
+    ],
+    "VL": 0.306787,
+    "VL_ci95": [
+     0.223546,
+     0.390027
+    ],
+    "rms_residual_mm": 0.752105,
+    "se_K": 0.0836891,
+    "se_VL": 0.0424704
+   },
+   "expected": {
+    "K": 0.48,
+    "VL": 0.23
+   },
+   "id": "A",
+   "loglinear": {
+    "K": 0.789282,
+    "Smax_mm": 4.18571,
+    "VL": 0.556726,
+    "n_used": 13,
+    "slope": -0.802611
+   },
+   "max_slope_design_1_in": 1294.02,
+   "max_slope_fitted_1_in": 5562.17,
+   "offsets_m": [
+    -34.5,
+    -23.0,
+    -19.5,
+    -17.25,
+    -11.5,
+    -8.0,
+    -5.75,
+    -2.25,
+    0.0,
+    3.5,
+    5.75,
+    9.25,
+    11.5,
+    15.0,
+    17.25,
+    20.75,
+    23.0,
+    26.5,
+    32.25,
+    34.5,
+    38.0,
+    49.5
+   ],
+   "p_vl_exceeds_design": 3.42593e-60,
+   "p_vl_exceeds_observed_upper_bound": 1.76737e-31,
+   "readings_mm": [
+    -1.89145,
+    0.0548911,
+    1.90556,
+    2.11028,
+    0.806975,
+    2.80477,
+    3.23448,
+    3.78764,
+    4.18571,
+    2.79549,
+    3.54496,
+    2.28287,
+    2.09647,
+    1.1431,
+    0.998339,
+    0.657696,
+    1.06121,
+    0.71304,
+    0.523849,
+    0.795089,
+    1.00188,
+    -1.06345
+   ],
+   "review_states": {
+    "alert": 0,
+    "normal": 22,
+    "work_suspension": 0
+   },
+   "slope_steeper_than_design": false,
+   "title": "Old Alluvium array, drive performing as experience suggests",
+   "true": {
+    "K": 0.48,
+    "VL": 0.3
+   },
+   "zone": "Z1"
+  },
+  {
+   "axis_depth_m": 22.6667,
+   "bootstrap_ci95": {
+    "K": [
+     0.394902,
+     0.425305
+    ],
+    "VL": [
+     2.12479,
+     2.25926
+    ],
+    "n": 400
+   },
+   "centre_marker": {
+    "alert_mm": 25.29,
+    "first_projection_reaching_alert_at_D": -0.5,
+    "first_review_state_at_D": 1.5,
+    "first_suspension_at_D": null,
+    "sequence": [
+     {
+      "exceeds_stage_prediction": false,
+      "face_minus_array_D": -3,
+      "projected_final_mm": null,
+      "reading_mm": 0.896661,
+      "stage_prediction_mm": 0.389344,
+      "state": "normal"
+     },
+     {
+      "exceeds_stage_prediction": false,
+      "face_minus_array_D": -2,
+      "projected_final_mm": null,
+      "reading_mm": 3.35489,
+      "stage_prediction_mm": 0.908283,
+      "state": "normal"
+     },
+     {
+      "exceeds_stage_prediction": true,
+      "face_minus_array_D": -1,
+      "projected_final_mm": 22.6275,
+      "reading_mm": 6.33941,
+      "stage_prediction_mm": 1.74471,
+      "state": "normal"
+     },
+     {
+      "exceeds_stage_prediction": true,
+      "face_minus_array_D": -0.5,
+      "projected_final_mm": 30.3917,
+      "reading_mm": 11.7147,
+      "stage_prediction_mm": 2.25958,
+      "state": "normal"
+     },
+     {
+      "exceeds_stage_prediction": true,
+      "face_minus_array_D": 0,
+      "projected_final_mm": 30.6314,
+      "reading_mm": 15.3157,
+      "stage_prediction_mm": 2.8066,
+      "state": "normal"
+     },
+     {
+      "exceeds_stage_prediction": true,
+      "face_minus_array_D": 0.5,
+      "projected_final_mm": 32.0222,
+      "reading_mm": 19.679,
+      "stage_prediction_mm": 3.35363,
+      "state": "normal"
+     },
+     {
+      "exceeds_stage_prediction": true,
+      "face_minus_array_D": 1,
+      "projected_final_mm": 32.5886,
+      "reading_mm": 23.4584,
+      "stage_prediction_mm": 3.86849,
+      "state": "normal"
+     },
+     {
+      "exceeds_stage_prediction": true,
+      "face_minus_array_D": 1.5,
+      "projected_final_mm": 32.38,
+      "reading_mm": 26.1893,
+      "stage_prediction_mm": 4.32461,
+      "state": "alert"
+     },
+     {
+      "exceeds_stage_prediction": true,
+      "face_minus_array_D": 2,
+      "projected_final_mm": 31.6012,
+      "reading_mm": 27.7437,
+      "stage_prediction_mm": 4.70492,
+      "state": "alert"
+     },
+     {
+      "exceeds_stage_prediction": true,
+      "face_minus_array_D": 3,
+      "projected_final_mm": 32.4191,
+      "reading_mm": 31.1122,
+      "stage_prediction_mm": 5.22386,
+      "state": "alert"
+     },
+     {
+      "exceeds_stage_prediction": true,
+      "face_minus_array_D": 4,
+      "projected_final_mm": 31.3764,
+      "reading_mm": 31.0652,
+      "stage_prediction_mm": 5.47744,
+      "state": "alert"
+     },
+     {
+      "exceeds_stage_prediction": true,
+      "face_minus_array_D": 5,
+      "projected_final_mm": 32.615,
+      "reading_mm": 32.5564,
+      "stage_prediction_mm": 5.57503,
+      "state": "alert"
+     }
+    ],
+    "suspension_mm": 36.1286
+   },
+   "chainage_m": 700.0,
+   "departure_from_expected": {
+    "chi2": 3794.28,
+    "direction": "above",
+    "dof": 22,
+    "flagged": true,
+    "max_abs_z": 26.6425,
+    "p_value": 0.0
+   },
+   "design": {
+    "K": 0.5,
+    "VL": 3.0
+   },
+   "estimate": {
+    "K": 0.410715,
+    "K_ci95": [
+     0.395002,
+     0.426429
+    ],
+    "VL": 2.19265,
+    "VL_ci95": [
+     2.1208,
+     2.26451
+    ],
+    "rms_residual_mm": 1.0,
+    "se_K": 0.00801715,
+    "se_VL": 0.0366618
+   },
+   "expected": {
+    "K": 0.59,
+    "VL": 0.55
+   },
+   "id": "B",
+   "loglinear": {
+    "K": 0.412485,
+    "Smax_mm": 32.2557,
+    "VL": 2.2096,
+    "n_used": 9,
+    "slope": -2.93869
+   },
+   "max_slope_design_1_in": 517.194,
+   "max_slope_fitted_1_in": 477.471,
+   "offsets_m": [
+    -34.0,
+    -22.667,
+    -19.0,
+    -17.0,
+    -11.333,
+    -7.667,
+    -5.667,
+    -2.0,
+    0.0,
+    3.667,
+    5.667,
+    9.333,
+    11.333,
+    15.0,
+    17.0,
+    20.667,
+    22.667,
+    26.333,
+    32.0,
+    34.0,
+    37.667,
+    49.0
+   ],
+   "p_vl_exceeds_design": 8.96574e-108,
+   "p_vl_exceeds_observed_upper_bound": 1.0,
+   "readings_mm": [
+    1.74526,
+    2.03058,
+    4.69924,
+    4.64361,
+    14.6774,
+    22.337,
+    25.3019,
+    32.0663,
+    32.2557,
+    31.2359,
+    26.5001,
+    18.6799,
+    15.6964,
+    9.41879,
+    5.78537,
+    5.00433,
+    2.64253,
+    1.27895,
+    -1.25239,
+    -0.187628,
+    -0.832028,
+    0.813234
+   ],
+   "review_states": {
+    "alert": 9,
+    "normal": 13,
+    "work_suspension": 0
+   },
+   "slope_steeper_than_design": true,
+   "title": "Kallang Formation array, larger volume loss and a narrower trough than assumed",
+   "true": {
+    "K": 0.42,
+    "VL": 2.2
+   },
+   "zone": "Z3"
+  }
+ ],
+ "estimator_comparison": {
+  "rows": [
+   {
+    "estimator": "least squares on the Gaussian curve",
+    "mean_K": 0.419962,
+    "mean_VL": 2.20018,
+    "sd_K": 0.00785642,
+    "sd_VL": 0.0362815
+   },
+   {
+    "estimator": "straight-line method (S5), readings above 0.05 Smax",
+    "mean_K": 0.47007,
+    "mean_VL": 2.48645,
+    "sd_K": 0.0838196,
+    "sd_VL": 0.435823
+   },
+   {
+    "estimator": "straight-line method (S5), readings above 0.2 Smax",
+    "mean_K": 0.423954,
+    "mean_VL": 2.24307,
+    "sd_K": 0.0118104,
+    "sd_VL": 0.0565865
+   }
+  ],
+  "sigma_mm": 1.0,
+  "trials": 300,
+  "true": {
+   "K": 0.42,
+   "VL": 2.2
+  }
+ },
+ "label": "SYNTHETIC readings: Gaussian trough of the first drive plus normal noise",
+ "sigma_mm": 1.0
+}

@@ -42,7 +42,7 @@ def wilson_interval(k: int, n: int, z: float = 1.959963984540054) -> tuple[float
     den = 1.0 + z ** 2 / n
     centre = (p + z ** 2 / (2 * n)) / den
     half = z * math.sqrt(p * (1 - p) / n + z ** 2 / (4 * n ** 2)) / den
-    return (max(0.0, centre - half), min(1.0, centre + half))
+    return (0.0 if k == 0 else max(0.0, centre - half), 1.0 if k == n else min(1.0, centre + half))
 
 
 def sample_zone(zone: dict, n: int, rng: np.random.Generator, correlation: float = 1.0):

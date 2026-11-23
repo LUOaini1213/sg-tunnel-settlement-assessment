@@ -1,0 +1,275 @@
+{
+ "arrays": [
+  {
+   "axis_depth_m": 22.2,
+   "chainage_m": 20.0,
+   "id": "E01",
+   "n_points": 14,
+   "reason": "S1 Section 13.4.9: about 25 m before building B01",
+   "type": "E"
+  },
+  {
+   "axis_depth_m": 23.0,
+   "chainage_m": 100.0,
+   "id": "E02",
+   "n_points": 22,
+   "reason": "S1 Cl. 13.4.2.1 b): every 200 m of tunnel",
+   "type": "E"
+  },
+  {
+   "axis_depth_m": 24.22,
+   "chainage_m": 222.0,
+   "id": "E03",
+   "n_points": 22,
+   "reason": "S1 Section 13.4.9: about 50 m before building B04",
+   "type": "E"
+  },
+  {
+   "axis_depth_m": 24.47,
+   "chainage_m": 247.0,
+   "id": "E04",
+   "n_points": 22,
+   "reason": "S1 Section 13.4.9: about 25 m before building B04",
+   "type": "E"
+  },
+  {
+   "axis_depth_m": 25.0,
+   "chainage_m": 300.0,
+   "id": "E05",
+   "n_points": 22,
+   "reason": "S1 Cl. 13.4.2.1 b): every 200 m of tunnel",
+   "type": "E"
+  },
+  {
+   "axis_depth_m": 25.84,
+   "chainage_m": 416.0,
+   "id": "E06",
+   "n_points": 22,
+   "reason": "S1 Section 13.4.9: about 50 m before building B07",
+   "type": "E"
+  },
+  {
+   "axis_depth_m": 25.59,
+   "chainage_m": 441.0,
+   "id": "E07",
+   "n_points": 22,
+   "reason": "S1 Section 13.4.9: about 25 m before building B07",
+   "type": "E"
+  },
+  {
+   "axis_depth_m": 25.0,
+   "chainage_m": 500.0,
+   "id": "E08",
+   "n_points": 22,
+   "reason": "S1 Cl. 13.4.2.1 b): every 200 m of tunnel",
+   "type": "E"
+  },
+  {
+   "axis_depth_m": 22.6667,
+   "chainage_m": 700.0,
+   "id": "E09",
+   "n_points": 22,
+   "reason": "S1 Cl. 13.4.2.1 b): every 200 m of tunnel",
+   "type": "E"
+  },
+  {
+   "axis_depth_m": 22.3867,
+   "chainage_m": 721.0,
+   "id": "E10",
+   "n_points": 14,
+   "reason": "S1 Section 13.4.9: about 50 m before building B11",
+   "type": "E"
+  },
+  {
+   "axis_depth_m": 22.0533,
+   "chainage_m": 746.0,
+   "id": "E11",
+   "n_points": 14,
+   "reason": "S1 Section 13.4.9: about 25 m before building B11",
+   "type": "E"
+  },
+  {
+   "axis_depth_m": 20.0,
+   "chainage_m": 900.0,
+   "id": "E12",
+   "n_points": 14,
+   "reason": "S1 Cl. 13.4.2.1 b): every 200 m of tunnel",
+   "type": "E"
+  }
+ ],
+ "buildings": [
+  {
+   "id": "B01",
+   "in_monitoring_zone": true,
+   "marker_offsets_m": [
+    -27.0,
+    -15.11,
+    -5.0
+   ],
+   "markers": 3,
+   "rank": 10,
+   "real_time": true,
+   "tensile_strain_monitoring": false
+  },
+  {
+   "id": "B02",
+   "in_monitoring_zone": true,
+   "marker_offsets_m": [
+    10.0,
+    15.17,
+    40.0
+   ],
+   "markers": 3,
+   "rank": 11,
+   "real_time": false,
+   "tensile_strain_monitoring": false
+  },
+  {
+   "id": "B03",
+   "in_monitoring_zone": true,
+   "marker_offsets_m": [
+    -48.0,
+    -30.0
+   ],
+   "markers": 2,
+   "rank": 12,
+   "real_time": false,
+   "tensile_strain_monitoring": false
+  },
+  {
+   "id": "B04",
+   "in_monitoring_zone": true,
+   "marker_offsets_m": [
+    -10.0,
+    -0.03,
+    15.39,
+    25.0
+   ],
+   "markers": 4,
+   "rank": 5,
+   "real_time": true,
+   "tensile_strain_monitoring": false
+  },
+  {
+   "id": "B05",
+   "in_monitoring_zone": true,
+   "marker_offsets_m": [
+    12.0,
+    15.48,
+    36.0
+   ],
+   "markers": 3,
+   "rank": 9,
+   "real_time": false,
+   "tensile_strain_monitoring": false
+  },
+  {
+   "id": "B06",
+   "in_monitoring_zone": true,
+   "marker_offsets_m": [
+    -30.0,
+    -15.52,
+    -8.0
+   ],
+   "markers": 3,
+   "rank": 1,
+   "real_time": false,
+   "tensile_strain_monitoring": false
+  },
+  {
+   "id": "B07",
+   "in_monitoring_zone": true,
+   "marker_offsets_m": [
+    -12.0,
+    0.0,
+    15.43,
+    18.0
+   ],
+   "markers": 4,
+   "rank": 8,
+   "real_time": true,
+   "tensile_strain_monitoring": false
+  },
+  {
+   "id": "B08",
+   "in_monitoring_zone": true,
+   "marker_offsets_m": [
+    20.0,
+    50.0
+   ],
+   "markers": 2,
+   "rank": 4,
+   "real_time": false,
+   "tensile_strain_monitoring": false
+  },
+  {
+   "id": "B09",
+   "in_monitoring_zone": true,
+   "marker_offsets_m": [
+    15.0,
+    15.64,
+    35.0
+   ],
+   "markers": 3,
+   "rank": 2,
+   "real_time": false,
+   "tensile_strain_monitoring": false
+  },
+  {
+   "id": "B10",
+   "in_monitoring_zone": true,
+   "marker_offsets_m": [
+    -40.0,
+    -15.43,
+    -15.0
+   ],
+   "markers": 3,
+   "rank": 7,
+   "real_time": false,
+   "tensile_strain_monitoring": false
+  },
+  {
+   "id": "B11",
+   "in_monitoring_zone": true,
+   "marker_offsets_m": [
+    -20.0,
+    -15.26,
+    0.0,
+    5.0
+   ],
+   "markers": 4,
+   "rank": 3,
+   "real_time": true,
+   "tensile_strain_monitoring": false
+  },
+  {
+   "id": "B12",
+   "in_monitoring_zone": true,
+   "marker_offsets_m": [
+    30.0,
+    60.0
+   ],
+   "markers": 2,
+   "rank": 6,
+   "real_time": false,
+   "tensile_strain_monitoring": false
+  },
+  {
+   "id": "B13",
+   "in_monitoring_zone": false,
+   "markers": 0,
+   "real_time": false,
+   "tensile_strain_monitoring": false
+  }
+ ],
+ "counts": {
+  "building_points": 36,
+  "buildings_real_time": 4,
+  "buildings_tensile_strain": 0,
+  "type_d_points": 74,
+  "type_e_arrays": 12,
+  "type_e_points": 232,
+  "type_f_arrays": 1
+ },
+ "note": "Type F arrays add subsurface instruments (inclinometers, extensometers, piezometers); only their number is given here."
+}

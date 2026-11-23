@@ -1,0 +1,41 @@
+{
+ "characteristic": {
+  "K": 0.45,
+  "VL_pct": 0.5,
+  "allowable_total_movement_mm": 15.0,
+  "chainage_m": 250.0,
+  "clear_distance_m": 8.2,
+  "exceeds_allowable": false,
+  "level_checked_m": 13.0,
+  "max_slope_1_in": 1201.54,
+  "max_subsurface_settlement_mm": 11.0681,
+  "new_axis_depth_m": 24.5,
+  "surface_settlement_mm": 9.82245
+ },
+ "design": {
+  "K": 0.45,
+  "VL_pct": 1.0,
+  "allowable_total_movement_mm": 15.0,
+  "chainage_m": 250.0,
+  "clear_distance_m": 8.2,
+  "exceeds_allowable": true,
+  "level_checked_m": 13.0,
+  "max_slope_1_in": 600.77,
+  "max_subsurface_settlement_mm": 22.1361,
+  "new_axis_depth_m": 24.5,
+  "surface_settlement_mm": 19.6449
+ },
+ "mean": {
+  "K": 0.45,
+  "VL_pct": 0.23,
+  "allowable_total_movement_mm": 15.0,
+  "chainage_m": 250.0,
+  "clear_distance_m": 8.2,
+  "exceeds_allowable": false,
+  "level_checked_m": 13.0,
+  "max_slope_1_in": 2612.04,
+  "max_subsurface_settlement_mm": 5.0913,
+  "new_axis_depth_m": 24.5,
+  "surface_settlement_mm": 4.51833
+ }
+}

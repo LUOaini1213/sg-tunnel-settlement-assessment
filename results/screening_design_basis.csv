@@ -1,0 +1,14 @@
+rank,id,description,chainage_m,formation,foundation,structure,max_settlement_mm,max_slope_1_in,stage1_negligible,eps_max_pct,governing_case,governing_mode,stage2_category,sensitivity_index_sum,final_category,action
+1,B06,Abutting masonry shophouses,430,Mixed face: Old Alluvium with Kallang Formation,shallow,masonry,49.79,398.5,False,0.07925,"transverse, both drives",hogging/bending,2,2,4,Stage 3 detailed evaluation (S1 Section 14.3.6); outside this study
+2,B09,Two-storey masonry terrace,620,Kallang Formation (KF),shallow,masonry,33.98,412.6,False,0.09809,"transverse, both drives",hogging/bending,2,0,2,Stage 3 detailed evaluation (S1 Section 14.3.6); outside this study
+3,B11,Old masonry workshop in poor condition,780,Kallang Formation (KF),shallow,masonry,59.58,363.4,False,0.05602,"longitudinal, drive 1 passing",hogging/bending,1,1,2,"Stage 3 detailed evaluation (S1 Section 14.3.9, poor existing condition); outside this study"
+4,B08,Framed block with extension on mixed foundations,540,Mixed face: Old Alluvium with Kallang Formation,mixed,framed,21.24,421.3,False,,,,,0,,"Stage 3 detailed evaluation (S1 Section 14.3.8, mixed foundations); outside this study"
+5,B04,Nine-storey framed block on bored piles,290,Old Alluvium (OA),piled,framed,19.47,1145,False,,,,,0,,Pile assessment (S1 Section 14.3.7); outside this study
+6,B12,Twelve-storey framed tower on piles,850,Kallang Formation (KF),piled,framed,3.757,1251,True,,,,,0,,Pile assessment (S1 Section 14.3.7); outside this study
+7,B10,Five-storey framed block on footings,700,Kallang Formation (KF),shallow,framed,34.06,387.7,False,0.07306,"transverse, both drives",hogging/diagonal,1,0,1,None: low risk at Stage 2
+8,B07,Three-storey framed building on a raft,480,Mixed face: Old Alluvium with Kallang Formation,shallow,framed,58.03,388,False,0.05426,"transverse, first drive only",hogging/diagonal,1,0,1,None: low risk at Stage 2
+9,B05,Masonry hall with brittle finishes,350,Old Alluvium (OA),shallow,masonry,13.82,1183,False,0.03159,"transverse, both drives",hogging/bending,0,1,1,None: low risk at Stage 2
+10,B01,Two-storey masonry shophouse row,60,Old Alluvium (OA),shallow,masonry,19.33,1006,False,0.03025,"transverse, both drives",hogging/bending,0,0,0,None: low risk at Stage 2
+11,B02,Four-storey framed block on footings,120,Old Alluvium (OA),shallow,framed,15.91,1042,False,0.02537,"transverse, both drives",hogging/diagonal,0,0,0,None: low risk at Stage 2
+12,B03,Two-storey masonry house,200,Old Alluvium (OA),shallow,masonry,1.473,3471,True,0.01793,"transverse, both drives",hogging/bending,0,0,0,None: negligible at Stage 1
+13,B13,Single-storey masonry pavilion,660,Kallang Formation (KF),shallow,masonry,0.07995,4.148e+04,True,0.0001091,"longitudinal, drive 2 passing",hogging/bending,0,0,0,None: negligible at Stage 1

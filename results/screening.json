@@ -1,0 +1,1532 @@
+{
+ "characteristic": [
+  {
+   "K": 0.45,
+   "VL_pct": 1.5,
+   "above_tunnel": false,
+   "action": "Stage 3 detailed evaluation (S1 Section 14.3.6); outside this study",
+   "axis_depth_m": 25.7,
+   "cases": {
+    "longitudinal, drive 1 passing": {
+     "eps_max_pct": 0.0239576,
+     "mode": "hogging/bending"
+    },
+    "longitudinal, drive 2 passing": {
+     "eps_max_pct": 0.00976773,
+     "mode": "hogging/bending"
+    },
+    "transverse, both drives": {
+     "eps_max_pct": 0.0396256,
+     "mode": "hogging/bending"
+    },
+    "transverse, first drive only": {
+     "eps_max_pct": 0.028475,
+     "mode": "hogging/bending"
+    }
+   },
+   "chainage_m": 430.0,
+   "description": "Abutting masonry shophouses",
+   "eps_max_pct": 0.0396256,
+   "final_category": 2,
+   "formation": "Mixed face: Old Alluvium with Kallang Formation",
+   "foundation": "shallow",
+   "governing_case": "transverse, both drives",
+   "governing_mode": "hogging/bending",
+   "id": "B06",
+   "max_settlement_mm": 24.8966,
+   "max_slope_1_in": 796.904,
+   "rank": 1,
+   "sensitivity_index_sum": 2,
+   "stage1_negligible": false,
+   "stage2_applicable": true,
+   "stage2_category": 0,
+   "structure": "masonry",
+   "zone": "Z2"
+  },
+  {
+   "K": 0.5,
+   "VL_pct": 1.2,
+   "above_tunnel": true,
+   "action": "Stage 3 detailed evaluation (S1 Section 14.3.9, poor existing condition); outside this study",
+   "axis_depth_m": 21.6,
+   "cases": {
+    "longitudinal, drive 1 passing": {
+     "eps_max_pct": 0.0224094,
+     "mode": "hogging/bending"
+    },
+    "longitudinal, drive 2 passing": {
+     "eps_max_pct": 0.0218169,
+     "mode": "hogging/bending"
+    },
+    "transverse, both drives": {
+     "eps_max_pct": 0.0155525,
+     "mode": "hogging/bending"
+    },
+    "transverse, first drive only": {
+     "eps_max_pct": 0.0139156,
+     "mode": "sagging/diagonal"
+    }
+   },
+   "chainage_m": 780.0,
+   "description": "Old masonry workshop in poor condition",
+   "eps_max_pct": 0.0224094,
+   "final_category": 1,
+   "formation": "Kallang Formation (KF)",
+   "foundation": "shallow",
+   "governing_case": "longitudinal, drive 1 passing",
+   "governing_mode": "hogging/bending",
+   "id": "B11",
+   "max_settlement_mm": 23.8317,
+   "max_slope_1_in": 908.602,
+   "rank": 2,
+   "sensitivity_index_sum": 1,
+   "stage1_negligible": false,
+   "stage2_applicable": true,
+   "stage2_category": 0,
+   "structure": "masonry",
+   "zone": "Z3"
+  },
+  {
+   "K": 0.45,
+   "VL_pct": 1.5,
+   "above_tunnel": false,
+   "action": "Stage 3 detailed evaluation (S1 Section 14.3.8, mixed foundations); outside this study",
+   "axis_depth_m": 24.6,
+   "cases": {},
+   "chainage_m": 540.0,
+   "description": "Framed block with extension on mixed foundations",
+   "eps_max_pct": null,
+   "final_category": null,
+   "formation": "Mixed face: Old Alluvium with Kallang Formation",
+   "foundation": "mixed",
+   "governing_case": null,
+   "governing_mode": null,
+   "id": "B08",
+   "max_settlement_mm": 10.6212,
+   "max_slope_1_in": 842.562,
+   "rank": 3,
+   "sensitivity_index_sum": 0,
+   "stage1_negligible": false,
+   "stage2_applicable": false,
+   "stage2_category": null,
+   "structure": "framed",
+   "zone": "Z2"
+  },
+  {
+   "K": 0.45,
+   "VL_pct": 0.5,
+   "above_tunnel": true,
+   "action": "Pile assessment (S1 Section 14.3.7); outside this study",
+   "axis_depth_m": 24.9,
+   "cases": {},
+   "chainage_m": 290.0,
+   "description": "Nine-storey framed block on bored piles",
+   "eps_max_pct": null,
+   "final_category": null,
+   "formation": "Old Alluvium (OA)",
+   "foundation": "piled",
+   "governing_case": null,
+   "governing_mode": null,
+   "id": "B04",
+   "max_settlement_mm": 9.73618,
+   "max_slope_1_in": 2290.93,
+   "rank": 4,
+   "sensitivity_index_sum": 0,
+   "stage1_negligible": true,
+   "stage2_applicable": false,
+   "stage2_category": null,
+   "structure": "framed",
+   "zone": "Z1"
+  },
+  {
+   "K": 0.5,
+   "VL_pct": 1.2,
+   "above_tunnel": false,
+   "action": "Pile assessment (S1 Section 14.3.7); outside this study",
+   "axis_depth_m": 20.6667,
+   "cases": {},
+   "chainage_m": 850.0,
+   "description": "Twelve-storey framed tower on piles",
+   "eps_max_pct": null,
+   "final_category": null,
+   "formation": "Kallang Formation (KF)",
+   "foundation": "piled",
+   "governing_case": null,
+   "governing_mode": null,
+   "id": "B12",
+   "max_settlement_mm": 1.5027,
+   "max_slope_1_in": 3127.73,
+   "rank": 5,
+   "sensitivity_index_sum": 0,
+   "stage1_negligible": true,
+   "stage2_applicable": false,
+   "stage2_category": null,
+   "structure": "framed",
+   "zone": "Z3"
+  },
+  {
+   "K": 0.45,
+   "VL_pct": 0.5,
+   "above_tunnel": false,
+   "action": "None: low risk at Stage 2",
+   "axis_depth_m": 25.5,
+   "cases": {
+    "longitudinal, drive 1 passing": {
+     "eps_max_pct": 0.00174559,
+     "mode": "hogging/bending"
+    },
+    "longitudinal, drive 2 passing": {
+     "eps_max_pct": 0.00684892,
+     "mode": "hogging/bending"
+    },
+    "transverse, both drives": {
+     "eps_max_pct": 0.015797,
+     "mode": "hogging/bending"
+    },
+    "transverse, first drive only": {
+     "eps_max_pct": 0.00977325,
+     "mode": "hogging/bending"
+    }
+   },
+   "chainage_m": 350.0,
+   "description": "Masonry hall with brittle finishes",
+   "eps_max_pct": 0.015797,
+   "final_category": 1,
+   "formation": "Old Alluvium (OA)",
+   "foundation": "shallow",
+   "governing_case": "transverse, both drives",
+   "governing_mode": "hogging/bending",
+   "id": "B05",
+   "max_settlement_mm": 6.91051,
+   "max_slope_1_in": 2365.58,
+   "rank": 6,
+   "sensitivity_index_sum": 1,
+   "stage1_negligible": true,
+   "stage2_applicable": true,
+   "stage2_category": 0,
+   "structure": "masonry",
+   "zone": "Z1"
+  },
+  {
+   "K": 0.5,
+   "VL_pct": 1.2,
+   "above_tunnel": false,
+   "action": "None: low risk at Stage 2",
+   "axis_depth_m": 23.7333,
+   "cases": {
+    "longitudinal, drive 1 passing": {
+     "eps_max_pct": 0.00318958,
+     "mode": "hogging/bending"
+    },
+    "longitudinal, drive 2 passing": {
+     "eps_max_pct": 0.0157635,
+     "mode": "hogging/bending"
+    },
+    "transverse, both drives": {
+     "eps_max_pct": 0.0392343,
+     "mode": "hogging/bending"
+    },
+    "transverse, first drive only": {
+     "eps_max_pct": 0.0216407,
+     "mode": "hogging/bending"
+    }
+   },
+   "chainage_m": 620.0,
+   "description": "Two-storey masonry terrace",
+   "eps_max_pct": 0.0392343,
+   "final_category": 0,
+   "formation": "Kallang Formation (KF)",
+   "foundation": "shallow",
+   "governing_case": "transverse, both drives",
+   "governing_mode": "hogging/bending",
+   "id": "B09",
+   "max_settlement_mm": 13.5902,
+   "max_slope_1_in": 1031.61,
+   "rank": 7,
+   "sensitivity_index_sum": 0,
+   "stage1_negligible": false,
+   "stage2_applicable": true,
+   "stage2_category": 0,
+   "structure": "masonry",
+   "zone": "Z3"
+  },
+  {
+   "K": 0.5,
+   "VL_pct": 1.2,
+   "above_tunnel": false,
+   "action": "None: low risk at Stage 2",
+   "axis_depth_m": 22.6667,
+   "cases": {
+    "longitudinal, drive 1 passing": {
+     "eps_max_pct": 0.0107874,
+     "mode": "hogging/diagonal"
+    },
+    "longitudinal, drive 2 passing": {
+     "eps_max_pct": 0.00187132,
+     "mode": "hogging/diagonal"
+    },
+    "transverse, both drives": {
+     "eps_max_pct": 0.0292259,
+     "mode": "hogging/diagonal"
+    },
+    "transverse, first drive only": {
+     "eps_max_pct": 0.0238688,
+     "mode": "hogging/diagonal"
+    }
+   },
+   "chainage_m": 700.0,
+   "description": "Five-storey framed block on footings",
+   "eps_max_pct": 0.0292259,
+   "final_category": 0,
+   "formation": "Kallang Formation (KF)",
+   "foundation": "shallow",
+   "governing_case": "transverse, both drives",
+   "governing_mode": "hogging/diagonal",
+   "id": "B10",
+   "max_settlement_mm": 13.6235,
+   "max_slope_1_in": 969.3,
+   "rank": 8,
+   "sensitivity_index_sum": 0,
+   "stage1_negligible": false,
+   "stage2_applicable": true,
+   "stage2_category": 0,
+   "structure": "framed",
+   "zone": "Z3"
+  },
+  {
+   "K": 0.45,
+   "VL_pct": 1.5,
+   "above_tunnel": true,
+   "action": "None: low risk at Stage 2",
+   "axis_depth_m": 25.2,
+   "cases": {
+    "longitudinal, drive 1 passing": {
+     "eps_max_pct": 0.0154804,
+     "mode": "hogging/diagonal"
+    },
+    "longitudinal, drive 2 passing": {
+     "eps_max_pct": 0.0154804,
+     "mode": "hogging/diagonal"
+    },
+    "transverse, both drives": {
+     "eps_max_pct": 0.0256659,
+     "mode": "sagging/diagonal"
+    },
+    "transverse, first drive only": {
+     "eps_max_pct": 0.0271287,
+     "mode": "hogging/diagonal"
+    }
+   },
+   "chainage_m": 480.0,
+   "description": "Three-storey framed building on a raft",
+   "eps_max_pct": 0.0271287,
+   "final_category": 0,
+   "formation": "Mixed face: Old Alluvium with Kallang Formation",
+   "foundation": "shallow",
+   "governing_case": "transverse, first drive only",
+   "governing_mode": "hogging/diagonal",
+   "id": "B07",
+   "max_settlement_mm": 29.0143,
+   "max_slope_1_in": 776.043,
+   "rank": 9,
+   "sensitivity_index_sum": 0,
+   "stage1_negligible": false,
+   "stage2_applicable": true,
+   "stage2_category": 0,
+   "structure": "framed",
+   "zone": "Z2"
+  },
+  {
+   "K": 0.45,
+   "VL_pct": 0.5,
+   "above_tunnel": true,
+   "action": "None: negligible at Stage 1",
+   "axis_depth_m": 22.6,
+   "cases": {
+    "longitudinal, drive 1 passing": {
+     "eps_max_pct": 0.0103236,
+     "mode": "hogging/bending"
+    },
+    "longitudinal, drive 2 passing": {
+     "eps_max_pct": 0.00485049,
+     "mode": "hogging/bending"
+    },
+    "transverse, both drives": {
+     "eps_max_pct": 0.0151249,
+     "mode": "hogging/bending"
+    },
+    "transverse, first drive only": {
+     "eps_max_pct": 0.0120131,
+     "mode": "hogging/bending"
+    }
+   },
+   "chainage_m": 60.0,
+   "description": "Two-storey masonry shophouse row",
+   "eps_max_pct": 0.0151249,
+   "final_category": 0,
+   "formation": "Old Alluvium (OA)",
+   "foundation": "shallow",
+   "governing_case": "transverse, both drives",
+   "governing_mode": "hogging/bending",
+   "id": "B01",
+   "max_settlement_mm": 9.66328,
+   "max_slope_1_in": 2011.79,
+   "rank": 10,
+   "sensitivity_index_sum": 0,
+   "stage1_negligible": true,
+   "stage2_applicable": true,
+   "stage2_category": 0,
+   "structure": "masonry",
+   "zone": "Z1"
+  },
+  {
+   "K": 0.45,
+   "VL_pct": 0.5,
+   "above_tunnel": false,
+   "action": "None: negligible at Stage 1",
+   "axis_depth_m": 23.2,
+   "cases": {
+    "longitudinal, drive 1 passing": {
+     "eps_max_pct": 0.00150821,
+     "mode": "hogging/diagonal"
+    },
+    "longitudinal, drive 2 passing": {
+     "eps_max_pct": 0.00597243,
+     "mode": "hogging/diagonal"
+    },
+    "transverse, both drives": {
+     "eps_max_pct": 0.0126837,
+     "mode": "hogging/diagonal"
+    },
+    "transverse, first drive only": {
+     "eps_max_pct": 0.0107288,
+     "mode": "hogging/diagonal"
+    }
+   },
+   "chainage_m": 120.0,
+   "description": "Four-storey framed block on footings",
+   "eps_max_pct": 0.0126837,
+   "final_category": 0,
+   "formation": "Old Alluvium (OA)",
+   "foundation": "shallow",
+   "governing_case": "transverse, both drives",
+   "governing_mode": "hogging/diagonal",
+   "id": "B02",
+   "max_settlement_mm": 7.95598,
+   "max_slope_1_in": 2083.94,
+   "rank": 11,
+   "sensitivity_index_sum": 0,
+   "stage1_negligible": true,
+   "stage2_applicable": true,
+   "stage2_category": 0,
+   "structure": "framed",
+   "zone": "Z1"
+  },
+  {
+   "K": 0.45,
+   "VL_pct": 0.5,
+   "above_tunnel": false,
+   "action": "None: negligible at Stage 1",
+   "axis_depth_m": 24.0,
+   "cases": {
+    "longitudinal, drive 1 passing": {
+     "eps_max_pct": 0.000893655,
+     "mode": "hogging/bending"
+    },
+    "longitudinal, drive 2 passing": {
+     "eps_max_pct": 1.88648e-05,
+     "mode": "hogging/bending"
+    },
+    "transverse, both drives": {
+     "eps_max_pct": 0.00896268,
+     "mode": "hogging/bending"
+    },
+    "transverse, first drive only": {
+     "eps_max_pct": 0.00853983,
+     "mode": "hogging/bending"
+    }
+   },
+   "chainage_m": 200.0,
+   "description": "Two-storey masonry house",
+   "eps_max_pct": 0.00896268,
+   "final_category": 0,
+   "formation": "Old Alluvium (OA)",
+   "foundation": "shallow",
+   "governing_case": "transverse, both drives",
+   "governing_mode": "hogging/bending",
+   "id": "B03",
+   "max_settlement_mm": 0.736592,
+   "max_slope_1_in": 6942.14,
+   "rank": 12,
+   "sensitivity_index_sum": 0,
+   "stage1_negligible": true,
+   "stage2_applicable": true,
+   "stage2_category": 0,
+   "structure": "masonry",
+   "zone": "Z1"
+  },
+  {
+   "K": 0.5,
+   "VL_pct": 1.2,
+   "above_tunnel": false,
+   "action": "None: negligible at Stage 1",
+   "axis_depth_m": 23.2,
+   "cases": {
+    "longitudinal, drive 1 passing": {
+     "eps_max_pct": 2.07106e-07,
+     "mode": "hogging/bending"
+    },
+    "longitudinal, drive 2 passing": {
+     "eps_max_pct": 4.3652e-05,
+     "mode": "hogging/bending"
+    },
+    "transverse, both drives": {
+     "eps_max_pct": 0.0,
+     "mode": "outside trough"
+    },
+    "transverse, first drive only": {
+     "eps_max_pct": 0.0,
+     "mode": "outside trough"
+    }
+   },
+   "chainage_m": 660.0,
+   "description": "Single-storey masonry pavilion",
+   "eps_max_pct": 4.3652e-05,
+   "final_category": 0,
+   "formation": "Kallang Formation (KF)",
+   "foundation": "shallow",
+   "governing_case": "longitudinal, drive 2 passing",
+   "governing_mode": "hogging/bending",
+   "id": "B13",
+   "max_settlement_mm": 0.0319816,
+   "max_slope_1_in": 103705.0,
+   "rank": 13,
+   "sensitivity_index_sum": 0,
+   "stage1_negligible": true,
+   "stage2_applicable": true,
+   "stage2_category": 0,
+   "structure": "masonry",
+   "zone": "Z3"
+  }
+ ],
+ "design": [
+  {
+   "K": 0.45,
+   "VL_pct": 3.0,
+   "above_tunnel": false,
+   "action": "Stage 3 detailed evaluation (S1 Section 14.3.6); outside this study",
+   "axis_depth_m": 25.7,
+   "cases": {
+    "longitudinal, drive 1 passing": {
+     "eps_max_pct": 0.0479152,
+     "mode": "hogging/bending"
+    },
+    "longitudinal, drive 2 passing": {
+     "eps_max_pct": 0.0195355,
+     "mode": "hogging/bending"
+    },
+    "transverse, both drives": {
+     "eps_max_pct": 0.0792513,
+     "mode": "hogging/bending"
+    },
+    "transverse, first drive only": {
+     "eps_max_pct": 0.0569499,
+     "mode": "hogging/bending"
+    }
+   },
+   "chainage_m": 430.0,
+   "description": "Abutting masonry shophouses",
+   "eps_max_pct": 0.0792513,
+   "final_category": 4,
+   "formation": "Mixed face: Old Alluvium with Kallang Formation",
+   "foundation": "shallow",
+   "governing_case": "transverse, both drives",
+   "governing_mode": "hogging/bending",
+   "id": "B06",
+   "max_settlement_mm": 49.7932,
+   "max_slope_1_in": 398.452,
+   "rank": 1,
+   "sensitivity_index_sum": 2,
+   "stage1_negligible": false,
+   "stage2_applicable": true,
+   "stage2_category": 2,
+   "structure": "masonry",
+   "zone": "Z2"
+  },
+  {
+   "K": 0.5,
+   "VL_pct": 3.0,
+   "above_tunnel": false,
+   "action": "Stage 3 detailed evaluation (S1 Section 14.3.6); outside this study",
+   "axis_depth_m": 23.7333,
+   "cases": {
+    "longitudinal, drive 1 passing": {
+     "eps_max_pct": 0.00797396,
+     "mode": "hogging/bending"
+    },
+    "longitudinal, drive 2 passing": {
+     "eps_max_pct": 0.0394089,
+     "mode": "hogging/bending"
+    },
+    "transverse, both drives": {
+     "eps_max_pct": 0.0980856,
+     "mode": "hogging/bending"
+    },
+    "transverse, first drive only": {
+     "eps_max_pct": 0.0541019,
+     "mode": "hogging/bending"
+    }
+   },
+   "chainage_m": 620.0,
+   "description": "Two-storey masonry terrace",
+   "eps_max_pct": 0.0980856,
+   "final_category": 2,
+   "formation": "Kallang Formation (KF)",
+   "foundation": "shallow",
+   "governing_case": "transverse, both drives",
+   "governing_mode": "hogging/bending",
+   "id": "B09",
+   "max_settlement_mm": 33.9756,
+   "max_slope_1_in": 412.643,
+   "rank": 2,
+   "sensitivity_index_sum": 0,
+   "stage1_negligible": false,
+   "stage2_applicable": true,
+   "stage2_category": 2,
+   "structure": "masonry",
+   "zone": "Z3"
+  },
+  {
+   "K": 0.5,
+   "VL_pct": 3.0,
+   "above_tunnel": true,
+   "action": "Stage 3 detailed evaluation (S1 Section 14.3.9, poor existing condition); outside this study",
+   "axis_depth_m": 21.6,
+   "cases": {
+    "longitudinal, drive 1 passing": {
+     "eps_max_pct": 0.0560234,
+     "mode": "hogging/bending"
+    },
+    "longitudinal, drive 2 passing": {
+     "eps_max_pct": 0.0545423,
+     "mode": "hogging/bending"
+    },
+    "transverse, both drives": {
+     "eps_max_pct": 0.0388812,
+     "mode": "hogging/bending"
+    },
+    "transverse, first drive only": {
+     "eps_max_pct": 0.034789,
+     "mode": "sagging/diagonal"
+    }
+   },
+   "chainage_m": 780.0,
+   "description": "Old masonry workshop in poor condition",
+   "eps_max_pct": 0.0560234,
+   "final_category": 2,
+   "formation": "Kallang Formation (KF)",
+   "foundation": "shallow",
+   "governing_case": "longitudinal, drive 1 passing",
+   "governing_mode": "hogging/bending",
+   "id": "B11",
+   "max_settlement_mm": 59.5793,
+   "max_slope_1_in": 363.441,
+   "rank": 3,
+   "sensitivity_index_sum": 1,
+   "stage1_negligible": false,
+   "stage2_applicable": true,
+   "stage2_category": 1,
+   "structure": "masonry",
+   "zone": "Z3"
+  },
+  {
+   "K": 0.45,
+   "VL_pct": 3.0,
+   "above_tunnel": false,
+   "action": "Stage 3 detailed evaluation (S1 Section 14.3.8, mixed foundations); outside this study",
+   "axis_depth_m": 24.6,
+   "cases": {},
+   "chainage_m": 540.0,
+   "description": "Framed block with extension on mixed foundations",
+   "eps_max_pct": null,
+   "final_category": null,
+   "formation": "Mixed face: Old Alluvium with Kallang Formation",
+   "foundation": "mixed",
+   "governing_case": null,
+   "governing_mode": null,
+   "id": "B08",
+   "max_settlement_mm": 21.2424,
+   "max_slope_1_in": 421.281,
+   "rank": 4,
+   "sensitivity_index_sum": 0,
+   "stage1_negligible": false,
+   "stage2_applicable": false,
+   "stage2_category": null,
+   "structure": "framed",
+   "zone": "Z2"
+  },
+  {
+   "K": 0.45,
+   "VL_pct": 1.0,
+   "above_tunnel": true,
+   "action": "Pile assessment (S1 Section 14.3.7); outside this study",
+   "axis_depth_m": 24.9,
+   "cases": {},
+   "chainage_m": 290.0,
+   "description": "Nine-storey framed block on bored piles",
+   "eps_max_pct": null,
+   "final_category": null,
+   "formation": "Old Alluvium (OA)",
+   "foundation": "piled",
+   "governing_case": null,
+   "governing_mode": null,
+   "id": "B04",
+   "max_settlement_mm": 19.4724,
+   "max_slope_1_in": 1145.46,
+   "rank": 5,
+   "sensitivity_index_sum": 0,
+   "stage1_negligible": false,
+   "stage2_applicable": false,
+   "stage2_category": null,
+   "structure": "framed",
+   "zone": "Z1"
+  },
+  {
+   "K": 0.5,
+   "VL_pct": 3.0,
+   "above_tunnel": false,
+   "action": "Pile assessment (S1 Section 14.3.7); outside this study",
+   "axis_depth_m": 20.6667,
+   "cases": {},
+   "chainage_m": 850.0,
+   "description": "Twelve-storey framed tower on piles",
+   "eps_max_pct": null,
+   "final_category": null,
+   "formation": "Kallang Formation (KF)",
+   "foundation": "piled",
+   "governing_case": null,
+   "governing_mode": null,
+   "id": "B12",
+   "max_settlement_mm": 3.75675,
+   "max_slope_1_in": 1251.09,
+   "rank": 6,
+   "sensitivity_index_sum": 0,
+   "stage1_negligible": true,
+   "stage2_applicable": false,
+   "stage2_category": null,
+   "structure": "framed",
+   "zone": "Z3"
+  },
+  {
+   "K": 0.5,
+   "VL_pct": 3.0,
+   "above_tunnel": false,
+   "action": "None: low risk at Stage 2",
+   "axis_depth_m": 22.6667,
+   "cases": {
+    "longitudinal, drive 1 passing": {
+     "eps_max_pct": 0.0269684,
+     "mode": "hogging/diagonal"
+    },
+    "longitudinal, drive 2 passing": {
+     "eps_max_pct": 0.0046783,
+     "mode": "hogging/diagonal"
+    },
+    "transverse, both drives": {
+     "eps_max_pct": 0.0730649,
+     "mode": "hogging/diagonal"
+    },
+    "transverse, first drive only": {
+     "eps_max_pct": 0.0596721,
+     "mode": "hogging/diagonal"
+    }
+   },
+   "chainage_m": 700.0,
+   "description": "Five-storey framed block on footings",
+   "eps_max_pct": 0.0730649,
+   "final_category": 1,
+   "formation": "Kallang Formation (KF)",
+   "foundation": "shallow",
+   "governing_case": "transverse, both drives",
+   "governing_mode": "hogging/diagonal",
+   "id": "B10",
+   "max_settlement_mm": 34.0588,
+   "max_slope_1_in": 387.72,
+   "rank": 7,
+   "sensitivity_index_sum": 0,
+   "stage1_negligible": false,
+   "stage2_applicable": true,
+   "stage2_category": 1,
+   "structure": "framed",
+   "zone": "Z3"
+  },
+  {
+   "K": 0.45,
+   "VL_pct": 3.0,
+   "above_tunnel": true,
+   "action": "None: low risk at Stage 2",
+   "axis_depth_m": 25.2,
+   "cases": {
+    "longitudinal, drive 1 passing": {
+     "eps_max_pct": 0.0309609,
+     "mode": "hogging/diagonal"
+    },
+    "longitudinal, drive 2 passing": {
+     "eps_max_pct": 0.0309609,
+     "mode": "hogging/diagonal"
+    },
+    "transverse, both drives": {
+     "eps_max_pct": 0.0513319,
+     "mode": "sagging/diagonal"
+    },
+    "transverse, first drive only": {
+     "eps_max_pct": 0.0542574,
+     "mode": "hogging/diagonal"
+    }
+   },
+   "chainage_m": 480.0,
+   "description": "Three-storey framed building on a raft",
+   "eps_max_pct": 0.0542574,
+   "final_category": 1,
+   "formation": "Mixed face: Old Alluvium with Kallang Formation",
+   "foundation": "shallow",
+   "governing_case": "transverse, first drive only",
+   "governing_mode": "hogging/diagonal",
+   "id": "B07",
+   "max_settlement_mm": 58.0286,
+   "max_slope_1_in": 388.021,
+   "rank": 8,
+   "sensitivity_index_sum": 0,
+   "stage1_negligible": false,
+   "stage2_applicable": true,
+   "stage2_category": 1,
+   "structure": "framed",
+   "zone": "Z2"
+  },
+  {
+   "K": 0.45,
+   "VL_pct": 1.0,
+   "above_tunnel": false,
+   "action": "None: low risk at Stage 2",
+   "axis_depth_m": 25.5,
+   "cases": {
+    "longitudinal, drive 1 passing": {
+     "eps_max_pct": 0.00349119,
+     "mode": "hogging/bending"
+    },
+    "longitudinal, drive 2 passing": {
+     "eps_max_pct": 0.0136978,
+     "mode": "hogging/bending"
+    },
+    "transverse, both drives": {
+     "eps_max_pct": 0.0315939,
+     "mode": "hogging/bending"
+    },
+    "transverse, first drive only": {
+     "eps_max_pct": 0.0195465,
+     "mode": "hogging/bending"
+    }
+   },
+   "chainage_m": 350.0,
+   "description": "Masonry hall with brittle finishes",
+   "eps_max_pct": 0.0315939,
+   "final_category": 1,
+   "formation": "Old Alluvium (OA)",
+   "foundation": "shallow",
+   "governing_case": "transverse, both drives",
+   "governing_mode": "hogging/bending",
+   "id": "B05",
+   "max_settlement_mm": 13.821,
+   "max_slope_1_in": 1182.79,
+   "rank": 9,
+   "sensitivity_index_sum": 1,
+   "stage1_negligible": false,
+   "stage2_applicable": true,
+   "stage2_category": 0,
+   "structure": "masonry",
+   "zone": "Z1"
+  },
+  {
+   "K": 0.45,
+   "VL_pct": 1.0,
+   "above_tunnel": true,
+   "action": "None: low risk at Stage 2",
+   "axis_depth_m": 22.6,
+   "cases": {
+    "longitudinal, drive 1 passing": {
+     "eps_max_pct": 0.0206471,
+     "mode": "hogging/bending"
+    },
+    "longitudinal, drive 2 passing": {
+     "eps_max_pct": 0.00970097,
+     "mode": "hogging/bending"
+    },
+    "transverse, both drives": {
+     "eps_max_pct": 0.0302497,
+     "mode": "hogging/bending"
+    },
+    "transverse, first drive only": {
+     "eps_max_pct": 0.0240262,
+     "mode": "hogging/bending"
+    }
+   },
+   "chainage_m": 60.0,
+   "description": "Two-storey masonry shophouse row",
+   "eps_max_pct": 0.0302497,
+   "final_category": 0,
+   "formation": "Old Alluvium (OA)",
+   "foundation": "shallow",
+   "governing_case": "transverse, both drives",
+   "governing_mode": "hogging/bending",
+   "id": "B01",
+   "max_settlement_mm": 19.3266,
+   "max_slope_1_in": 1005.89,
+   "rank": 10,
+   "sensitivity_index_sum": 0,
+   "stage1_negligible": false,
+   "stage2_applicable": true,
+   "stage2_category": 0,
+   "structure": "masonry",
+   "zone": "Z1"
+  },
+  {
+   "K": 0.45,
+   "VL_pct": 1.0,
+   "above_tunnel": false,
+   "action": "None: low risk at Stage 2",
+   "axis_depth_m": 23.2,
+   "cases": {
+    "longitudinal, drive 1 passing": {
+     "eps_max_pct": 0.00301643,
+     "mode": "hogging/diagonal"
+    },
+    "longitudinal, drive 2 passing": {
+     "eps_max_pct": 0.0119449,
+     "mode": "hogging/diagonal"
+    },
+    "transverse, both drives": {
+     "eps_max_pct": 0.0253674,
+     "mode": "hogging/diagonal"
+    },
+    "transverse, first drive only": {
+     "eps_max_pct": 0.0214577,
+     "mode": "hogging/diagonal"
+    }
+   },
+   "chainage_m": 120.0,
+   "description": "Four-storey framed block on footings",
+   "eps_max_pct": 0.0253674,
+   "final_category": 0,
+   "formation": "Old Alluvium (OA)",
+   "foundation": "shallow",
+   "governing_case": "transverse, both drives",
+   "governing_mode": "hogging/diagonal",
+   "id": "B02",
+   "max_settlement_mm": 15.912,
+   "max_slope_1_in": 1041.97,
+   "rank": 11,
+   "sensitivity_index_sum": 0,
+   "stage1_negligible": false,
+   "stage2_applicable": true,
+   "stage2_category": 0,
+   "structure": "framed",
+   "zone": "Z1"
+  },
+  {
+   "K": 0.45,
+   "VL_pct": 1.0,
+   "above_tunnel": false,
+   "action": "None: negligible at Stage 1",
+   "axis_depth_m": 24.0,
+   "cases": {
+    "longitudinal, drive 1 passing": {
+     "eps_max_pct": 0.00178731,
+     "mode": "hogging/bending"
+    },
+    "longitudinal, drive 2 passing": {
+     "eps_max_pct": 3.77295e-05,
+     "mode": "hogging/bending"
+    },
+    "transverse, both drives": {
+     "eps_max_pct": 0.0179254,
+     "mode": "hogging/bending"
+    },
+    "transverse, first drive only": {
+     "eps_max_pct": 0.0170797,
+     "mode": "hogging/bending"
+    }
+   },
+   "chainage_m": 200.0,
+   "description": "Two-storey masonry house",
+   "eps_max_pct": 0.0179254,
+   "final_category": 0,
+   "formation": "Old Alluvium (OA)",
+   "foundation": "shallow",
+   "governing_case": "transverse, both drives",
+   "governing_mode": "hogging/bending",
+   "id": "B03",
+   "max_settlement_mm": 1.47318,
+   "max_slope_1_in": 3471.07,
+   "rank": 12,
+   "sensitivity_index_sum": 0,
+   "stage1_negligible": true,
+   "stage2_applicable": true,
+   "stage2_category": 0,
+   "structure": "masonry",
+   "zone": "Z1"
+  },
+  {
+   "K": 0.5,
+   "VL_pct": 3.0,
+   "above_tunnel": false,
+   "action": "None: negligible at Stage 1",
+   "axis_depth_m": 23.2,
+   "cases": {
+    "longitudinal, drive 1 passing": {
+     "eps_max_pct": 5.17765e-07,
+     "mode": "hogging/bending"
+    },
+    "longitudinal, drive 2 passing": {
+     "eps_max_pct": 0.00010913,
+     "mode": "hogging/bending"
+    },
+    "transverse, both drives": {
+     "eps_max_pct": 0.0,
+     "mode": "outside trough"
+    },
+    "transverse, first drive only": {
+     "eps_max_pct": 0.0,
+     "mode": "outside trough"
+    }
+   },
+   "chainage_m": 660.0,
+   "description": "Single-storey masonry pavilion",
+   "eps_max_pct": 0.00010913,
+   "final_category": 0,
+   "formation": "Kallang Formation (KF)",
+   "foundation": "shallow",
+   "governing_case": "longitudinal, drive 2 passing",
+   "governing_mode": "hogging/bending",
+   "id": "B13",
+   "max_settlement_mm": 0.0799541,
+   "max_slope_1_in": 41482.2,
+   "rank": 13,
+   "sensitivity_index_sum": 0,
+   "stage1_negligible": true,
+   "stage2_applicable": true,
+   "stage2_category": 0,
+   "structure": "masonry",
+   "zone": "Z3"
+  }
+ ],
+ "mean": [
+  {
+   "K": 0.45,
+   "VL_pct": 0.7,
+   "above_tunnel": false,
+   "action": "Stage 3 detailed evaluation (S1 Section 14.3.6); outside this study",
+   "axis_depth_m": 25.7,
+   "cases": {
+    "longitudinal, drive 1 passing": {
+     "eps_max_pct": 0.0111802,
+     "mode": "hogging/bending"
+    },
+    "longitudinal, drive 2 passing": {
+     "eps_max_pct": 0.00455828,
+     "mode": "hogging/bending"
+    },
+    "transverse, both drives": {
+     "eps_max_pct": 0.018492,
+     "mode": "hogging/bending"
+    },
+    "transverse, first drive only": {
+     "eps_max_pct": 0.0132883,
+     "mode": "hogging/bending"
+    }
+   },
+   "chainage_m": 430.0,
+   "description": "Abutting masonry shophouses",
+   "eps_max_pct": 0.018492,
+   "final_category": 2,
+   "formation": "Mixed face: Old Alluvium with Kallang Formation",
+   "foundation": "shallow",
+   "governing_case": "transverse, both drives",
+   "governing_mode": "hogging/bending",
+   "id": "B06",
+   "max_settlement_mm": 11.6184,
+   "max_slope_1_in": 1707.65,
+   "rank": 1,
+   "sensitivity_index_sum": 2,
+   "stage1_negligible": false,
+   "stage2_applicable": true,
+   "stage2_category": 0,
+   "structure": "masonry",
+   "zone": "Z2"
+  },
+  {
+   "K": 0.5,
+   "VL_pct": 0.55,
+   "above_tunnel": true,
+   "action": "Stage 3 detailed evaluation (S1 Section 14.3.9, poor existing condition); outside this study",
+   "axis_depth_m": 21.6,
+   "cases": {
+    "longitudinal, drive 1 passing": {
+     "eps_max_pct": 0.010271,
+     "mode": "hogging/bending"
+    },
+    "longitudinal, drive 2 passing": {
+     "eps_max_pct": 0.00999943,
+     "mode": "hogging/bending"
+    },
+    "transverse, both drives": {
+     "eps_max_pct": 0.00712822,
+     "mode": "hogging/bending"
+    },
+    "transverse, first drive only": {
+     "eps_max_pct": 0.00637798,
+     "mode": "sagging/diagonal"
+    }
+   },
+   "chainage_m": 780.0,
+   "description": "Old masonry workshop in poor condition",
+   "eps_max_pct": 0.010271,
+   "final_category": 1,
+   "formation": "Kallang Formation (KF)",
+   "foundation": "shallow",
+   "governing_case": "longitudinal, drive 1 passing",
+   "governing_mode": "hogging/bending",
+   "id": "B11",
+   "max_settlement_mm": 10.9229,
+   "max_slope_1_in": 1982.4,
+   "rank": 2,
+   "sensitivity_index_sum": 1,
+   "stage1_negligible": false,
+   "stage2_applicable": true,
+   "stage2_category": 0,
+   "structure": "masonry",
+   "zone": "Z3"
+  },
+  {
+   "K": 0.45,
+   "VL_pct": 0.7,
+   "above_tunnel": false,
+   "action": "Stage 3 detailed evaluation (S1 Section 14.3.8, mixed foundations); outside this study",
+   "axis_depth_m": 24.6,
+   "cases": {},
+   "chainage_m": 540.0,
+   "description": "Framed block with extension on mixed foundations",
+   "eps_max_pct": null,
+   "final_category": null,
+   "formation": "Mixed face: Old Alluvium with Kallang Formation",
+   "foundation": "mixed",
+   "governing_case": null,
+   "governing_mode": null,
+   "id": "B08",
+   "max_settlement_mm": 4.95655,
+   "max_slope_1_in": 1805.49,
+   "rank": 3,
+   "sensitivity_index_sum": 0,
+   "stage1_negligible": true,
+   "stage2_applicable": false,
+   "stage2_category": null,
+   "structure": "framed",
+   "zone": "Z2"
+  },
+  {
+   "K": 0.45,
+   "VL_pct": 0.23,
+   "above_tunnel": true,
+   "action": "Pile assessment (S1 Section 14.3.7); outside this study",
+   "axis_depth_m": 24.9,
+   "cases": {},
+   "chainage_m": 290.0,
+   "description": "Nine-storey framed block on bored piles",
+   "eps_max_pct": null,
+   "final_category": null,
+   "formation": "Old Alluvium (OA)",
+   "foundation": "piled",
+   "governing_case": null,
+   "governing_mode": null,
+   "id": "B04",
+   "max_settlement_mm": 4.47864,
+   "max_slope_1_in": 4980.28,
+   "rank": 4,
+   "sensitivity_index_sum": 0,
+   "stage1_negligible": true,
+   "stage2_applicable": false,
+   "stage2_category": null,
+   "structure": "framed",
+   "zone": "Z1"
+  },
+  {
+   "K": 0.5,
+   "VL_pct": 0.55,
+   "above_tunnel": false,
+   "action": "Pile assessment (S1 Section 14.3.7); outside this study",
+   "axis_depth_m": 20.6667,
+   "cases": {},
+   "chainage_m": 850.0,
+   "description": "Twelve-storey framed tower on piles",
+   "eps_max_pct": null,
+   "final_category": null,
+   "formation": "Kallang Formation (KF)",
+   "foundation": "piled",
+   "governing_case": null,
+   "governing_mode": null,
+   "id": "B12",
+   "max_settlement_mm": 0.688738,
+   "max_slope_1_in": 6824.13,
+   "rank": 5,
+   "sensitivity_index_sum": 0,
+   "stage1_negligible": true,
+   "stage2_applicable": false,
+   "stage2_category": null,
+   "structure": "framed",
+   "zone": "Z3"
+  },
+  {
+   "K": 0.45,
+   "VL_pct": 0.23,
+   "above_tunnel": false,
+   "action": "None: low risk at Stage 2",
+   "axis_depth_m": 25.5,
+   "cases": {
+    "longitudinal, drive 1 passing": {
+     "eps_max_pct": 0.000802974,
+     "mode": "hogging/bending"
+    },
+    "longitudinal, drive 2 passing": {
+     "eps_max_pct": 0.0031505,
+     "mode": "hogging/bending"
+    },
+    "transverse, both drives": {
+     "eps_max_pct": 0.00726661,
+     "mode": "hogging/bending"
+    },
+    "transverse, first drive only": {
+     "eps_max_pct": 0.00449569,
+     "mode": "hogging/bending"
+    }
+   },
+   "chainage_m": 350.0,
+   "description": "Masonry hall with brittle finishes",
+   "eps_max_pct": 0.00726661,
+   "final_category": 1,
+   "formation": "Old Alluvium (OA)",
+   "foundation": "shallow",
+   "governing_case": "transverse, both drives",
+   "governing_mode": "hogging/bending",
+   "id": "B05",
+   "max_settlement_mm": 3.17883,
+   "max_slope_1_in": 5142.56,
+   "rank": 6,
+   "sensitivity_index_sum": 1,
+   "stage1_negligible": true,
+   "stage2_applicable": true,
+   "stage2_category": 0,
+   "structure": "masonry",
+   "zone": "Z1"
+  },
+  {
+   "K": 0.5,
+   "VL_pct": 0.55,
+   "above_tunnel": false,
+   "action": "None: negligible at Stage 1",
+   "axis_depth_m": 23.7333,
+   "cases": {
+    "longitudinal, drive 1 passing": {
+     "eps_max_pct": 0.00146189,
+     "mode": "hogging/bending"
+    },
+    "longitudinal, drive 2 passing": {
+     "eps_max_pct": 0.00722496,
+     "mode": "hogging/bending"
+    },
+    "transverse, both drives": {
+     "eps_max_pct": 0.0179824,
+     "mode": "hogging/bending"
+    },
+    "transverse, first drive only": {
+     "eps_max_pct": 0.00991868,
+     "mode": "hogging/bending"
+    }
+   },
+   "chainage_m": 620.0,
+   "description": "Two-storey masonry terrace",
+   "eps_max_pct": 0.0179824,
+   "final_category": 0,
+   "formation": "Kallang Formation (KF)",
+   "foundation": "shallow",
+   "governing_case": "transverse, both drives",
+   "governing_mode": "hogging/bending",
+   "id": "B09",
+   "max_settlement_mm": 6.22886,
+   "max_slope_1_in": 2250.78,
+   "rank": 7,
+   "sensitivity_index_sum": 0,
+   "stage1_negligible": true,
+   "stage2_applicable": true,
+   "stage2_category": 0,
+   "structure": "masonry",
+   "zone": "Z3"
+  },
+  {
+   "K": 0.5,
+   "VL_pct": 0.55,
+   "above_tunnel": false,
+   "action": "None: negligible at Stage 1",
+   "axis_depth_m": 22.6667,
+   "cases": {
+    "longitudinal, drive 1 passing": {
+     "eps_max_pct": 0.00494421,
+     "mode": "hogging/diagonal"
+    },
+    "longitudinal, drive 2 passing": {
+     "eps_max_pct": 0.000857689,
+     "mode": "hogging/diagonal"
+    },
+    "transverse, both drives": {
+     "eps_max_pct": 0.0133952,
+     "mode": "hogging/diagonal"
+    },
+    "transverse, first drive only": {
+     "eps_max_pct": 0.0109399,
+     "mode": "hogging/diagonal"
+    }
+   },
+   "chainage_m": 700.0,
+   "description": "Five-storey framed block on footings",
+   "eps_max_pct": 0.0133952,
+   "final_category": 0,
+   "formation": "Kallang Formation (KF)",
+   "foundation": "shallow",
+   "governing_case": "transverse, both drives",
+   "governing_mode": "hogging/diagonal",
+   "id": "B10",
+   "max_settlement_mm": 6.24411,
+   "max_slope_1_in": 2114.84,
+   "rank": 8,
+   "sensitivity_index_sum": 0,
+   "stage1_negligible": true,
+   "stage2_applicable": true,
+   "stage2_category": 0,
+   "structure": "framed",
+   "zone": "Z3"
+  },
+  {
+   "K": 0.45,
+   "VL_pct": 0.7,
+   "above_tunnel": true,
+   "action": "None: low risk at Stage 2",
+   "axis_depth_m": 25.2,
+   "cases": {
+    "longitudinal, drive 1 passing": {
+     "eps_max_pct": 0.0072242,
+     "mode": "hogging/diagonal"
+    },
+    "longitudinal, drive 2 passing": {
+     "eps_max_pct": 0.0072242,
+     "mode": "hogging/diagonal"
+    },
+    "transverse, both drives": {
+     "eps_max_pct": 0.0119774,
+     "mode": "sagging/diagonal"
+    },
+    "transverse, first drive only": {
+     "eps_max_pct": 0.0126601,
+     "mode": "hogging/diagonal"
+    }
+   },
+   "chainage_m": 480.0,
+   "description": "Three-storey framed building on a raft",
+   "eps_max_pct": 0.0126601,
+   "final_category": 0,
+   "formation": "Mixed face: Old Alluvium with Kallang Formation",
+   "foundation": "shallow",
+   "governing_case": "transverse, first drive only",
+   "governing_mode": "hogging/diagonal",
+   "id": "B07",
+   "max_settlement_mm": 13.54,
+   "max_slope_1_in": 1662.95,
+   "rank": 9,
+   "sensitivity_index_sum": 0,
+   "stage1_negligible": false,
+   "stage2_applicable": true,
+   "stage2_category": 0,
+   "structure": "framed",
+   "zone": "Z2"
+  },
+  {
+   "K": 0.45,
+   "VL_pct": 0.23,
+   "above_tunnel": true,
+   "action": "None: negligible at Stage 1",
+   "axis_depth_m": 22.6,
+   "cases": {
+    "longitudinal, drive 1 passing": {
+     "eps_max_pct": 0.00474884,
+     "mode": "hogging/bending"
+    },
+    "longitudinal, drive 2 passing": {
+     "eps_max_pct": 0.00223122,
+     "mode": "hogging/bending"
+    },
+    "transverse, both drives": {
+     "eps_max_pct": 0.00695744,
+     "mode": "hogging/bending"
+    },
+    "transverse, first drive only": {
+     "eps_max_pct": 0.00552603,
+     "mode": "hogging/bending"
+    }
+   },
+   "chainage_m": 60.0,
+   "description": "Two-storey masonry shophouse row",
+   "eps_max_pct": 0.00695744,
+   "final_category": 0,
+   "formation": "Old Alluvium (OA)",
+   "foundation": "shallow",
+   "governing_case": "transverse, both drives",
+   "governing_mode": "hogging/bending",
+   "id": "B01",
+   "max_settlement_mm": 4.44511,
+   "max_slope_1_in": 4373.45,
+   "rank": 10,
+   "sensitivity_index_sum": 0,
+   "stage1_negligible": true,
+   "stage2_applicable": true,
+   "stage2_category": 0,
+   "structure": "masonry",
+   "zone": "Z1"
+  },
+  {
+   "K": 0.45,
+   "VL_pct": 0.23,
+   "above_tunnel": false,
+   "action": "None: negligible at Stage 1",
+   "axis_depth_m": 23.2,
+   "cases": {
+    "longitudinal, drive 1 passing": {
+     "eps_max_pct": 0.000693778,
+     "mode": "hogging/diagonal"
+    },
+    "longitudinal, drive 2 passing": {
+     "eps_max_pct": 0.00274732,
+     "mode": "hogging/diagonal"
+    },
+    "transverse, both drives": {
+     "eps_max_pct": 0.0058345,
+     "mode": "hogging/diagonal"
+    },
+    "transverse, first drive only": {
+     "eps_max_pct": 0.00493527,
+     "mode": "hogging/diagonal"
+    }
+   },
+   "chainage_m": 120.0,
+   "description": "Four-storey framed block on footings",
+   "eps_max_pct": 0.0058345,
+   "final_category": 0,
+   "formation": "Old Alluvium (OA)",
+   "foundation": "shallow",
+   "governing_case": "transverse, both drives",
+   "governing_mode": "hogging/diagonal",
+   "id": "B02",
+   "max_settlement_mm": 3.65975,
+   "max_slope_1_in": 4530.3,
+   "rank": 11,
+   "sensitivity_index_sum": 0,
+   "stage1_negligible": true,
+   "stage2_applicable": true,
+   "stage2_category": 0,
+   "structure": "framed",
+   "zone": "Z1"
+  },
+  {
+   "K": 0.45,
+   "VL_pct": 0.23,
+   "above_tunnel": false,
+   "action": "None: negligible at Stage 1",
+   "axis_depth_m": 24.0,
+   "cases": {
+    "longitudinal, drive 1 passing": {
+     "eps_max_pct": 0.000411081,
+     "mode": "hogging/bending"
+    },
+    "longitudinal, drive 2 passing": {
+     "eps_max_pct": 8.67779e-06,
+     "mode": "hogging/bending"
+    },
+    "transverse, both drives": {
+     "eps_max_pct": 0.00412283,
+     "mode": "hogging/bending"
+    },
+    "transverse, first drive only": {
+     "eps_max_pct": 0.00392832,
+     "mode": "hogging/bending"
+    }
+   },
+   "chainage_m": 200.0,
+   "description": "Two-storey masonry house",
+   "eps_max_pct": 0.00412283,
+   "final_category": 0,
+   "formation": "Old Alluvium (OA)",
+   "foundation": "shallow",
+   "governing_case": "transverse, both drives",
+   "governing_mode": "hogging/bending",
+   "id": "B03",
+   "max_settlement_mm": 0.338832,
+   "max_slope_1_in": 15091.6,
+   "rank": 12,
+   "sensitivity_index_sum": 0,
+   "stage1_negligible": true,
+   "stage2_applicable": true,
+   "stage2_category": 0,
+   "structure": "masonry",
+   "zone": "Z1"
+  },
+  {
+   "K": 0.5,
+   "VL_pct": 0.55,
+   "above_tunnel": false,
+   "action": "None: negligible at Stage 1",
+   "axis_depth_m": 23.2,
+   "cases": {
+    "longitudinal, drive 1 passing": {
+     "eps_max_pct": 9.49236e-08,
+     "mode": "hogging/bending"
+    },
+    "longitudinal, drive 2 passing": {
+     "eps_max_pct": 2.00071e-05,
+     "mode": "hogging/bending"
+    },
+    "transverse, both drives": {
+     "eps_max_pct": 0.0,
+     "mode": "outside trough"
+    },
+    "transverse, first drive only": {
+     "eps_max_pct": 0.0,
+     "mode": "outside trough"
+    }
+   },
+   "chainage_m": 660.0,
+   "description": "Single-storey masonry pavilion",
+   "eps_max_pct": 2.00071e-05,
+   "final_category": 0,
+   "formation": "Kallang Formation (KF)",
+   "foundation": "shallow",
+   "governing_case": "longitudinal, drive 2 passing",
+   "governing_mode": "hogging/bending",
+   "id": "B13",
+   "max_settlement_mm": 0.0146582,
+   "max_slope_1_in": 226266.0,
+   "rank": 13,
+   "sensitivity_index_sum": 0,
+   "stage1_negligible": true,
+   "stage2_applicable": true,
+   "stage2_category": 0,
+   "structure": "masonry",
+   "zone": "Z3"
+  }
+ ]
+}
