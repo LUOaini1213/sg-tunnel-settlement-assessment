@@ -1,0 +1,14 @@
+id,description,chainage_m,y_start_m,y_end_m,along_length_m,height_m,structure,foundation,in_use,idx_form,idx_heritage,idx_condition
+B01,Two-storey masonry shophouse row,60,-27,-5,30,8,masonry,shallow,yes,0,0,0
+B02,Four-storey framed block on footings,120,10,40,24,14,framed,shallow,yes,0,0,0
+B03,Two-storey masonry house,200,-48,-30,12,7,masonry,shallow,yes,0,0,0
+B04,Nine-storey framed block on bored piles,290,-10,25,36,30,framed,piled,yes,0,0,0
+B05,Masonry hall with brittle finishes,350,12,36,20,10,masonry,shallow,yes,0,1,0
+B06,Abutting masonry shophouses,430,-30,-8,40,9,masonry,shallow,yes,2,0,0
+B07,Three-storey framed building on a raft,480,-12,18,28,12,framed,shallow,yes,0,0,0
+B08,Framed block with extension on mixed foundations,540,20,50,30,15,framed,mixed,yes,0,0,0
+B09,Two-storey masonry terrace,620,15,35,26,8,masonry,shallow,yes,0,0,0
+B10,Five-storey framed block on footings,700,-40,-15,30,16,framed,shallow,yes,0,0,0
+B11,Old masonry workshop in poor condition,780,-20,5,18,7,masonry,shallow,yes,0,0,1
+B12,Twelve-storey framed tower on piles,850,30,60,30,40,framed,piled,yes,0,0,0
+B13,Single-storey masonry pavilion,660,48,70,15,5,masonry,shallow,yes,0,0,0

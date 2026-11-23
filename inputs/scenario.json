@@ -1,0 +1,67 @@
+{
+  "label": "SYNTHETIC",
+  "note": "Stylised twin bored tunnel drive invented for this study. It is not a real line, station, building or site. Geometry and buildings are SYNTHETIC; ground parameters are published typical values or ASSUMPTION as labelled.",
+  "alignment": {
+    "length_m": 900.0,
+    "excavated_diameter_m": 6.6,
+    "diameter_basis": "ILLUSTRATIVE: S1 Table 14.1 gives typical K and V for tunnels up to 6.6 m excavated diameter",
+    "tunnels": [
+      {"id": "T1", "name": "first drive", "y0_m": -7.5},
+      {"id": "T2", "name": "second drive", "y0_m": 7.5}
+    ],
+    "drive_order": ["T1", "T2"],
+    "axis_depth_control_points": [[0.0, 22.0], [400.0, 26.0], [600.0, 24.0], [900.0, 20.0]],
+    "second_tunnel_vl_factor": 1.0
+  },
+  "ground_zones": [
+    {
+      "id": "Z1", "from_m": 0.0, "to_m": 380.0,
+      "formation": "Old Alluvium (OA)",
+      "design": {"K": 0.45, "VL": 1.0, "source": "S1 Table 14.1, Old Alluvium, pressure balance machine"},
+      "observed_vl": {"mean": 0.23, "characteristic_95": 0.5, "upper_bound": 0.8, "source": "S5 Table 2, row 7 (OA, EPB TBM)"},
+      "observed_k_best_fit": 0.48,
+      "k_range": [0.40, 0.55]
+    },
+    {
+      "id": "Z2", "from_m": 380.0, "to_m": 560.0,
+      "formation": "Mixed face: Old Alluvium with Kallang Formation",
+      "design": {"K": 0.45, "VL": 3.0, "source": "S1 Table 14.1, mixed-face of Kallang and other formation, pressure balance machine"},
+      "observed_vl": {"mean": 0.70, "characteristic_95": 1.5, "upper_bound": 2.0, "source": "S5 Table 2, row 9 (OA mixed with Kallang Formation, EPB TBM)"},
+      "observed_k_best_fit": 0.60,
+      "k_range": [0.40, 0.65]
+    },
+    {
+      "id": "Z3", "from_m": 560.0, "to_m": 900.0,
+      "formation": "Kallang Formation (KF)",
+      "design": {"K": 0.5, "VL": 3.0, "source": "S1 Table 14.1, Kallang Formation, pressure balance machine"},
+      "observed_vl": {"mean": 0.55, "characteristic_95": 1.2, "upper_bound": 1.5, "source": "S5 Table 2, row 8 (Kallang Formation, EPB TBM)"},
+      "observed_k_best_fit": 0.59,
+      "k_range": [0.45, 0.65]
+    }
+  ],
+  "existing_tunnel": {
+    "label": "SYNTHETIC",
+    "description": "Invented existing bored rail tunnel crossing above the new drives at right angles",
+    "chainage_m": 250.0,
+    "axis_depth_m": 10.0,
+    "diameter_m": 6.0,
+    "allowable_total_movement_mm": 15.0,
+    "allowable_source": "S2 Table 2(b): bored tunnel, total movement in any direction 15 mm"
+  },
+  "assumptions": {
+    "poisson_ratio": {"value": 0.3, "label": "REAL", "basis": "S3 Eq. 10 is written for Poisson's ratio 0.3"},
+    "alert_factor": {"value": 0.7, "label": "ASSUMPTION", "basis": "Alert level set at 70% of the work suspension level. S1 Cl. 13.7 defines the two levels but gives no ratio."},
+    "min_suspension_level_mm": {"value": 5.0, "label": "ASSUMPTION", "basis": "Floor so that instruments with very small predictions are not triggered by survey scatter"},
+    "heave_alert_mm": {"value": 3.5, "label": "ASSUMPTION", "basis": "S1 Cl. 13.7.6 asks for heave levels; no value is published, 70% of the heave suspension level is used"},
+    "heave_suspension_mm": {"value": 5.0, "label": "ASSUMPTION", "basis": "No published value; set equal to the minimum settlement suspension level"},
+    "marker_noise_sd_mm": {"value": 1.0, "label": "ASSUMPTION", "basis": "Standard deviation of one settlement-marker reading; S8 Table 3 uses a 1 mm measurement error"},
+    "vl_distribution": {"value": "lognormal", "label": "ASSUMPTION", "basis": "Shape chosen by the author; mean and 95th percentile matched to S5 Table 2. S5 notes that the data do not always follow a normal distribution."},
+    "k_distribution": {"value": "uniform", "label": "ASSUMPTION", "basis": "Range chosen by the author to bracket the S1 design value and the S5 best-fit value"},
+    "vl_correlation_between_drives": {"value": 1.0, "label": "ASSUMPTION", "basis": "Both drives share one volume-loss draw in the base case; the independent case is reported as a sensitivity"},
+    "depth_tolerance_m": {"value": 2.0, "label": "ASSUMPTION", "basis": "Range of axis depth used in the sensitivity study"},
+    "second_tunnel_factor_range": {"value": [1.0, 1.5], "label": "ASSUMPTION", "basis": "S3 section 2.4 says interaction can be allowed for with a greater volume loss for the second tunnel; no factor is given"},
+    "monte_carlo_samples": {"value": 10000, "label": "ASSUMPTION", "basis": "Sample size"},
+    "random_seed": {"value": 20261124, "label": "ASSUMPTION", "basis": "Fixed for reproducibility"},
+    "stabilised_distance_diameters": {"value": 5.0, "label": "REAL", "basis": "S7 section 3.1: settlement taken at 5D after the TBM has passed the array"}
+  }
+}
