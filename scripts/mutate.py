@@ -1,6 +1,6 @@
 """Plant errors in the engineering code one at a time and check that the test suite notices each one.
 
-Usage: python scripts/mutate.py --record first|final|ci [--require-all] [--only N[,N...]]
+Usage: python scripts/mutate.py --record first|added|final|ci [--require-all] [--only N[,N...]] [--from N]
 
 Each mutant is a hand-written, plausible mistake: a wrong sign, i in place of z0, the neutral axis in
 the wrong place, a threshold off by one category, and so on. The golden tests (committed results
@@ -8,6 +8,10 @@ against a fresh run, committed workbook against the generator) are excluded, so 
 from a test with an independent expectation. Every file is restored after its mutant has run, and
 again on exit. Results go to results/mutation.json under the given key. Mutants judged equivalent
 (no input can tell them apart) are listed in EQUIVALENT with the reason.
+
+History: the first 117 mutants were written and run before the review ("first"). The review added
+the mutants from index FIRST_SET onwards and ran them once against the suite as it then stood
+("added"), before writing tests for the ones that survived; "final" is the whole list afterwards.
 """
 from __future__ import annotations
 
@@ -21,6 +25,7 @@ OUT = ROOT / "results" / "mutation.json"
 PYTEST = [sys.executable, "-m", "pytest", "-q", "-x", "-p", "no:cacheprovider", "-m", "not golden"]
 G, B, S = "tunnelscreen/greenfield.py", "tunnelscreen/building.py", "tunnelscreen/screening.py"
 U, M, A, W = "tunnelscreen/uncertainty.py", "tunnelscreen/monitoring.py", "tunnelscreen/backanalysis.py", "tunnelscreen/workbook.py"
+P = "tunnelscreen/pipeline.py"
 
 MUTANTS = [
     # ---- greenfield: trough geometry and volume
@@ -118,7 +123,7 @@ MUTANTS = [
     (M, "            if centre and not kept[-1][1]:", "            if False:"),
     (M, '        if b.in_use and row["above_tunnel"]:', "        if b.in_use:"),
     (M, "                ch = front - d", "                ch = front + d"),
-    (M, "        half_zone = max(abs(y) for y in y0s) + MONITORING_ZONE_FACTOR * z0", "        half_zone = MONITORING_ZONE_FACTOR * z0"),
+    (M, "    return max(abs(y) for y in tunnel_offsets) + MONITORING_ZONE_FACTOR * z0", "    return MONITORING_ZONE_FACTOR * z0"),
     (M, "TENSILE_STRAIN_MONITORING_PCT = 0.1", "TENSILE_STRAIN_MONITORING_PCT = 0.05"),
     (M, '    ts = sc.tunnels_at(scn, chainage, VL=zone["observed_vl"]["mean"])', '    ts = sc.tunnels_at(scn, chainage, VL=zone["observed_vl"]["characteristic_95"])'),
     # ---- monitoring: review levels and trigger logic
@@ -155,6 +160,60 @@ MUTANTS = [
     (W, 'IF(H6>=0.075,2,IF(H6>=0.05,1,0))))"', 'IF(H6>=0.075,2,IF(H6>=0.06,1,0))))"'),
     (W, '        return f"{smax}*EXP(-(({x}-{cen})^2)/(2*{ii}^2))"', '        return f"{smax}*EXP(-({x}-{cen})^2/(2*{ii}^2))"'),
 ]
+FIRST_SET = len(MUTANTS)  # 117: the list as it stood for the first run
+
+MUTANTS += [
+    # ---- added in the review: greenfield
+    (G, "SQRT_2PI = math.sqrt(2.0 * math.pi)", "SQRT_2PI = math.sqrt(math.pi)"),
+    (G, "    return np.exp(-0.5 * xi ** 2) / SQRT_2PI", "    return np.exp(-xi ** 2) / SQRT_2PI"),
+    (G, "    lo = min(t.y0 - TROUGH_LIMIT_FACTOR * _i(t) for t in tunnels)", "    lo = min(t.y0 - TROUGH_LIMIT_FACTOR * t.z0 for t in tunnels)"),
+    (G, "    return float(settlement_one(y, t)) * face_factor(x, x_face, _i(t))", "    return float(settlement_one(y, t)) * face_factor(x, x_face, t.z0)"),
+    (G, "        out = out + smax_z * np.exp(-(y - t.y0) ** 2 / (2.0 * i_z ** 2))", "        out = out + smax_z * np.exp(-(y - t.y0) ** 2 / (2.0 * _i(t) ** 2))"),
+    # ---- added: building
+    (B, 'E_OVER_G = {"masonry": 2.6, "framed": 12.5}', 'E_OVER_G = {"masonry": 12.5, "framed": 2.6}'),
+    (B, "CATEGORY_LIMITS = (0.0005, 0.00075, 0.0015, 0.003)", "CATEGORY_LIMITS = (0.0005, 0.00075, 0.002, 0.003)"),
+    (B, "CATEGORY_LIMITS = (0.0005, 0.00075, 0.0015, 0.003)", "CATEGORY_LIMITS = (0.0005, 0.00075, 0.0015, 0.0025)"),
+    (B, '    if mode == "hogging" and hogging_neutral_axis == "bottom":', '    if mode == "sagging" and hogging_neutral_axis == "bottom":'),
+    (B, "    eps_d = dr / diagonal_factor(L, H, e_over_g, mode, hogging_neutral_axis)", "    eps_d = dr / bending_factor(L, H, e_over_g, mode, hogging_neutral_axis)"),
+    (B, "    chord = s[0] + (s[-1] - s[0]) * (xs - a) / L", "    chord = s[0] + 0.0 * xs"),
+    (B, "    for j in np.nonzero(k[:-1] * k[1:] < 0.0)[0]:", "    for j in np.nonzero(k[:-1] * k[1:] < 0.0)[0][:1]:"),
+    (B, '    if not compression_relief and mode == "sagging":', '    if compression_relief and mode == "sagging":'),
+    # ---- added: screening
+    (S, "    return b.y_start < t.y0 + t.D / 2.0 and b.y_end > t.y0 - t.D / 2.0", "    return b.y_start < t.y0 < b.y_end"),
+    (S, "    return float(np.interp(chainage, [p[0] for p in pts], [p[1] for p in pts]))", "    return float(pts[0][1])"),
+    (S, "    half = gf.TROUGH_LIMIT_FACTOR * gf.trough_width(t.K, t.z0)", "    half = gf.trough_width(t.K, t.z0)"),
+    (S, '            vl = zone["observed_vl"]["mean"]', '            vl = zone["observed_vl"]["characteristic_95"]'),
+    (S, '"exceeds_differential_gradient": grad > 1.0 / limit_1_in,', '"exceeds_differential_gradient": grad > limit_1_in,'),
+    (S, "    grad = float(np.max(np.abs(np.gradient(s, ys))))", "    grad = float(np.max(np.abs(np.gradient(gf.settlement(ys, tunnels), ys))))"),
+    (S, '    if foundation == "piled":', '    if foundation == "mixed":'),
+    # ---- added: uncertainty
+    (U, "rng.uniform(k_lo, k_hi, n)", "np.full(n, 0.5 * (k_lo + k_hi))"),
+    (U, "    half = z * math.sqrt(p * (1 - p) / n + z ** 2 / (4 * n ** 2)) / den", "    half = z * math.sqrt(p * (1 - p) / n) / den"),
+    (U, '    return {"p": k / n, "lo95": lo, "hi95": hi, "count": k}', '    return {"p": k / (n + 1), "lo95": lo, "hi95": hi, "count": k}'),
+    (U, "            smax[j] = float(np.max(gf.settlement(ys, ts)))", "            smax[j] = float(np.max(gf.settlement(ys, ts[:1])))"),
+    (U, "max(float(np.max(gf.settlement_one(ys, t))) for t in ts) / (i * gf.SQRT_2PI))", "max(float(np.max(gf.settlement_one(ys, t))) for t in ts) / i)"),
+    # ---- added: monitoring
+    (M, "TYPE_D_SPACING_M = 25.0", "TYPE_D_SPACING_M = 50.0"),
+    (M, "TYPE_E_SPACING_M = 200.0", "TYPE_E_SPACING_M = 250.0"),
+    (M, "APPROACH_ARRAY_DISTANCES_M = (25.0, 50.0)", "APPROACH_ARRAY_DISTANCES_M = (25.0, 75.0)"),
+    (M, "        pts.update(round(v, 2) for v in bld.inflexion_points(prof, lo, hi))", "        pts.update([])"),
+    (M, '"tensile_strain_monitoring": bool(eps is not None and eps > TENSILE_STRAIN_MONITORING_PCT),', '"tensile_strain_monitoring": bool(eps is not None),'),
+    # ---- added: back-analysis
+    (A, "    keep = (s > min_fraction * smax) & ~np.isclose(y, 0.0)", "    keep = ~np.isclose(y, 0.0)"),
+    (A, "    VL = 100.0 * vs / (math.pi * D ** 2 / 4.0)", "    VL = vs / (math.pi * D ** 2 / 4.0)"),
+    (A, "    return model_mm(y, VL, K, z0, D, y0) + rng.normal(0.0, sigma_mm, y.size)", "    return model_mm(y, VL, K, z0, D, y0) + rng.normal(0.0, 2.0 * sigma_mm, y.size)"),
+    # ---- added: workbook formulas
+    (W, '"=B14/(SQRT(2*PI())*B13)"', '"=B14/(2.5*B13)"'),
+    (W, '        return f"(-({x}-{cen})/{z0c}*{s_of(x)})"', '        return f"(({x}-{cen})/{z0c}*{s_of(x)})"'),
+    (W, "{c}15/(12*{c}22)", "{c}15/(6*{c}22)"),
+    (W, "1+$B$6*{c}15^2/(18*{c}21*$B$7)", "1+$B$6*{c}15^2*$B$7/(18*{c}21)"),
+    (W, '"=MIN($B$5,$B$9+2.5*$B$10)"', '"=MIN($B$5,$B$9+3*$B$10)"'),
+    # ---- added: trigger logic of the back-analysis demonstration
+    (P, '            if first_alert is None and state != "normal":', '            if first_alert is None and state == "work_suspension":'),
+    (P, '            if first_projected is None and proj is not None and proj >= lv0["alert_mm"]:', '            if first_projected is None and proj is not None and proj >= lv0["suspension_mm"]:'),
+    (P, "            proj = ba.project_final(r, ch, xf, design_k * z0)", '            proj = ba.project_final(r, ch, xf, c["true_K"] * z0)'),
+    (P, "        dep_expected = ba.departure_test(readings, pred_expected, sigma)", "        dep_expected = ba.departure_test(readings, pred_design, sigma)"),
+]
 
 # (index in MUTANTS) -> reason no test can tell the mutant from the original
 EQUIVALENT: dict[int, str] = {}
@@ -186,12 +245,17 @@ def main() -> int:
     args = sys.argv[1:]
     key = args[args.index("--record") + 1] if "--record" in args else "ci"
     only = [int(v) for v in args[args.index("--only") + 1].split(",")] if "--only" in args else None
+    start = int(args[args.index("--from") + 1]) if "--from" in args else 0
+    for i, (rel, old, _) in enumerate(MUTANTS):  # every mutant must still apply to exactly one place
+        n = (ROOT / rel).read_text(encoding="utf-8").count(old)
+        if n != 1:
+            raise SystemExit(f"mutant {i}: expected exactly one occurrence in {rel} (found {n}): {old!r}")
     base = subprocess.run(PYTEST, cwd=ROOT, capture_output=True, text=True)
     if base.returncode != 0:
         print(base.stdout[-2000:])
         raise SystemExit("the unmutated suite must pass before mutation testing")
     survivors, killed, total = [], 0, 0
-    for i in (only if only is not None else range(len(MUTANTS))):
+    for i in (only if only is not None else range(start, len(MUTANTS))):
         if i in EQUIVALENT:
             continue
         total += 1
@@ -204,7 +268,7 @@ def main() -> int:
     print(f"{key}: killed {killed} of {total}", flush=True)
     if only is None:
         record = json.loads(OUT.read_text(encoding="utf-8")) if OUT.exists() else {}
-        record[key] = {"total": total, "killed": killed, "survivors": survivors}
+        record[key] = {"total": total, "killed": killed, "mutants": f"{start} to {len(MUTANTS) - 1}", "survivors": survivors}
         record["n_mutants"] = len(MUTANTS)
         record["tests_collected"] = collected()
         record["equivalent"] = [{"id": i, "file": MUTANTS[i][0], "original": MUTANTS[i][1].strip(), "mutation": MUTANTS[i][2].strip(), "reason": why}

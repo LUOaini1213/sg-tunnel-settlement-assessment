@@ -105,9 +105,51 @@ def context() -> dict:
     t0 = unc["tornado"][0]
     vlbar = next(b for b in t0["bars"] if b["input"].startswith("Volume loss (5th"))
     c["tornado_id"], c["tornado_vl_low"], c["tornado_vl_high"] = t0["building"], fmt(vlbar["low_pct"], 3), fmt(vlbar["high_pct"], 3)
+    short = {"Volume loss (5th to 95th percentile)": "volume loss", "Trough width parameter K": "the trough width parameter K",
+             "Depth to tunnel axis": "tunnel depth", "Volume loss factor on second drive": "the volume-loss factor on the second drive",
+             "E/G of the equivalent beam": "E/G", "Neutral axis in hogging": "the neutral-axis position",
+             "Building height H": "building height"}
+    top = [short[b["input"]] for b in t0["bars"][:3]]
+    c["tornado_order"] = f"{top[0]} dominates, then {top[1]}, then {top[2]}"
     c["et_design"], c["et_mean"] = fmt(ext["design"]["max_subsurface_settlement_mm"], 1), fmt(ext["mean"]["max_subsurface_settlement_mm"], 1)
+    c["et_char"] = fmt(ext["characteristic"]["max_subsurface_settlement_mm"], 1)
     c["et_allow"] = f"{ext['design']['allowable_total_movement_mm']:g}"
+    c["et_slope_design"], c["et_slope_char"] = f"{ext['design']['max_slope_1_in']:.0f}", f"{ext['characteristic']['max_slope_1_in']:.0f}"
+    c["et_diff"] = f"{ext['design']['allowable_differential_1_in']:g}"
+    # sagging spans with the compressive average strain set to zero
+    changed = [r for r in scr["sagging_compression_variant"] if abs(r["eps_max_pct_variant"] - r["eps_max_pct"]) > 1e-9]
+    moved = [r for r in changed if r["stage2_category_variant"] != r["stage2_category"]]
+    acts = [r for r in changed if r["action_variant"] != r["action"]]
+    if moved:
+        lift = "; ".join(f"raises building {r['id']} from Stage 2 category {r['stage2_category']} to {r['stage2_category_variant']}"
+                         for r in moved)
+        nxt = "changes no next step" if not acts else "changes the next step for " + ", ".join(r["id"] for r in acts)
+        why = ""
+        if not acts and all(by_id[r["id"]]["action"].startswith("Stage 3") for r in moved):
+            ids = ", ".join(r["id"] for r in moved)
+            why = f" ({ids} already go{'es' if len(moved) == 1 else ''} to Stage 3 detailed evaluation for another reason)"
+        c["variant_text"] = f"{lift} and {nxt}{why}. The largest strain changes for {len(changed)} of {len(shallow)} buildings (table below)."
+    else:
+        c["variant_text"] = (f"changes no Stage 2 category. The largest strain changes for {len(changed)} of {len(shallow)} "
+                             "buildings (table below).")
+    c["variant_table"] = table(
+        ["Building", "Max tensile strain as written (%)", "With compression in sagging set to zero (%)", "Governing mode then",
+         "Stage 2 category", "Next step"],
+        [[r["id"], fmt(r["eps_max_pct"], 3), fmt(r["eps_max_pct_variant"], 3), r["governing_mode_variant"],
+          f"{r['stage2_category']} to {r['stage2_category_variant']}" if r in moved else f"{r['stage2_category']} (unchanged)",
+          "changed" if r in acts else "unchanged"] for r in changed])
     k = mon["counts"]
+    bp_rt = [b["id"] for b in mon["buildings"] if b["real_time"]]
+    from tunnelscreen import screening as sc_mod
+
+    y0s = [t["y0_m"] for t in scn["alignment"]["tunnels"]]
+    blds = {b.id: b for b in sc_mod.load_buildings()}
+    edge = [i for i in bp_rt if not any(blds[i].y_start < y0 < blds[i].y_end for y0 in y0s)]
+    c["n_rt"], c["rt_edge_ids"] = len(bp_rt), " and ".join(edge)
+    n_app = {i: sum(1 for a in mon["arrays"] if a["reason"].endswith(f"before building {i}")) for i in bp_rt}
+    short_of = [i for i in bp_rt if n_app[i] < 2]
+    c["approach_note"] = f"{sum(n_app.values())} such arrays" + (
+        f"; {' and '.join(short_of)} {'is' if len(short_of) == 1 else 'are'} too close to the start of the drive for the second" if short_of else "")
     c["n_d"], c["n_e"], c["n_e_points"], c["n_f"], c["n_bldg_points"] = k["type_d_points"], k["type_e_arrays"], k["type_e_points"], k["type_f_arrays"], k["building_points"]
     c["alert_factor"], c["min_susp"] = a["alert_factor"]["value"], f"{a['min_suspension_level_mm']['value']:g}"
     cb = back["cases"][1]
@@ -136,7 +178,7 @@ def context() -> dict:
     c["clear_sep"] = f"{(y[1] - y[0]) - c['diameter']:g}"
     mut = mut or {}
     c["n_tests"] = mut.get("tests_collected", "(not yet run)")
-    for run in ("first", "final"):
+    for run in ("first", "added", "final"):
         rec = mut.get(run, {})
         c[f"mut_{run}_killed"] = rec.get("killed", "(not yet run)")
         c[f"mut_{run}_total"] = rec.get("total", "(not yet run)")
@@ -183,11 +225,11 @@ def context() -> dict:
         ["Item", "Number", "Basis"],
         [["Type D ground settlement points", k["type_d_points"], "CDC Cl. 13.4.2.1 a): every 25 m of each tunnel"],
          ["Type E arrays (lines of settlement points across the tunnels)", f"{k['type_e_arrays']} arrays, {k['type_e_points']} points",
-          "CDC Cl. 13.4.2.1 b): every 200 m; Section 13.4.9: about 25 m and 50 m before each building in use with a tunnel under it"],
+          "CDC Cl. 13.4.2.1 b): every 200 m; Section 13.4.9: about 25 m and 50 m before each building in use with any part of a tunnel under it"],
          ["Type F arrays (with subsurface instruments)", k["type_f_arrays"], "CDC Cl. 13.4.2.1 c): every 1000 m"],
          ["Building settlement points", k["building_points"], "CDC Cl. 13.4.7.1; points at facade ends, predicted inflexion points and the deepest point (ASSUMPTION)"],
          ["Buildings monitored in real time", f"{k['buildings_real_time']} ({', '.join(b for b in sorted(bp) if bp[b]['real_time'])})",
-          "CDC Section 13.4.9: in use, tunnel directly underneath"],
+          "CDC Section 13.4.9: in use, with any part of a tunnel directly or partially underneath"],
          ["Buildings with tensile strain monitoring", k["buildings_tensile_strain"], "CDC Cl. 13.4.7.2: predicted tensile strain above 0.1%"]])
     brows = []
     for cs in back["cases"]:
@@ -211,7 +253,12 @@ def context() -> dict:
         ["Design K and V by ground type: " + c["design_values"], "REAL", "S1 Table 14.1"],
         ["Observed volume loss by ground type (mean, 95% characteristic value, upper bound) and best-fit K", "REAL", "S5 Table 2"],
         ["Array types and spacings, tensile strain monitoring threshold 0.1%, definitions of the review levels", "REAL", "S1 Chapter 13"],
-        ["Allowable total movement of an existing bored tunnel, 15 mm", "REAL", "S2 Table 2(b)"],
+        ["Allowable movement of an existing bored tunnel: 15 mm total; differential 15 mm or 1:1000, whichever is lesser "
+         "(only the 1:1000 gradient is checked)", "REAL", "S2 Table 2(b)"],
+        ["A tunnel counts as under a building when any part of its excavated width is under the footprint", "REAL",
+         "S1 Section 13.4.9 (\"directly or partially underneath\")"],
+        ["Compressive average strain in sagging spans offsets bending, as Eq. 9 and 10 are written; a variant without the "
+         "offset is reported", "ASSUMPTION", "S3 section 4.3 gives the equations but no rule for compression"],
         ["E/G 2.6 (masonry) and 12.5 (framed), Poisson's ratio 0.3", "REAL", "S3 sections 4.2, 4.3 and 4.5"],
         ["Lognormal parameters of volume loss", "DERIVED", "From the S5 mean and 95% value for each ground type"],
         ["Review levels of each instrument", "DERIVED", "Design-basis prediction and the alert factor"],
@@ -244,6 +291,25 @@ def context() -> dict:
                  "ASSUMPTION", "Stated in the code where each is used"])
     prov.append(["Scaling of the subsurface trough width for a surface K other than 0.5", "ASSUMPTION", "The published relation (S4 Eq. 8) is for clay with K = 0.5 at the surface"])
     c["provenance_table"] = table(["Input", "Label", "Source or basis"], prov)
+
+    # Words in the template that are not filled in from the results must still be true of them.
+    claims = {
+        "B06 is slight or worse in every sample": mcb["B06"]["p_final_category_at_least"]["2"]["p"] == 1.0,
+        "no marker of case B reaches the work suspension level": cb["review_states"]["work_suspension"] == 0,
+        "the fitted trough of case B is narrower and steeper than the design trough":
+            cb["slope_steeper_than_design"] and cb["estimate"]["K"] < cb["design"]["K"],
+        "the projection reaches the alert level before the reading": cm["first_projection_reaching_alert_at_D"] < cm["first_review_state_at_D"],
+        "least squares is unbiased and the straight-line method over-estimates":
+            abs(nls["mean_VL"] / tv - 1) < 0.005 and l05["mean_VL"] > l20["mean_VL"] > tv,
+        "the existing tunnel exceeds both limits on the design basis":
+            ext["design"]["exceeds_allowable"] and ext["design"]["exceeds_differential_gradient"],
+        "the existing tunnel is within both limits at the characteristic volume loss":
+            not ext["characteristic"]["exceeds_allowable"] and not ext["characteristic"]["exceeds_differential_gradient"],
+        "the clear separation of the twin tunnels exceeds one diameter": float(c["clear_sep"]) > c["diameter"],
+    }
+    wrong = [k for k, ok in claims.items() if not ok]
+    if wrong:
+        raise SystemExit("the README template states something the results no longer support: " + "; ".join(wrong))
     return c
 
 

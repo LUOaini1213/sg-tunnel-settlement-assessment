@@ -9,9 +9,25 @@
    "type": "E"
   },
   {
+   "axis_depth_m": 22.58,
+   "chainage_m": 58.0,
+   "id": "E02",
+   "n_points": 14,
+   "reason": "S1 Section 13.4.9: about 50 m before building B02",
+   "type": "E"
+  },
+  {
+   "axis_depth_m": 22.83,
+   "chainage_m": 83.0,
+   "id": "E03",
+   "n_points": 22,
+   "reason": "S1 Section 13.4.9: about 25 m before building B02",
+   "type": "E"
+  },
+  {
    "axis_depth_m": 23.0,
    "chainage_m": 100.0,
-   "id": "E02",
+   "id": "E04",
    "n_points": 22,
    "reason": "S1 Cl. 13.4.2.1 b): every 200 m of tunnel",
    "type": "E"
@@ -19,7 +35,7 @@
   {
    "axis_depth_m": 24.22,
    "chainage_m": 222.0,
-   "id": "E03",
+   "id": "E05",
    "n_points": 22,
    "reason": "S1 Section 13.4.9: about 50 m before building B04",
    "type": "E"
@@ -27,7 +43,7 @@
   {
    "axis_depth_m": 24.47,
    "chainage_m": 247.0,
-   "id": "E04",
+   "id": "E06",
    "n_points": 22,
    "reason": "S1 Section 13.4.9: about 25 m before building B04",
    "type": "E"
@@ -35,15 +51,31 @@
   {
    "axis_depth_m": 25.0,
    "chainage_m": 300.0,
-   "id": "E05",
+   "id": "E07",
    "n_points": 22,
    "reason": "S1 Cl. 13.4.2.1 b): every 200 m of tunnel",
    "type": "E"
   },
   {
+   "axis_depth_m": 25.6,
+   "chainage_m": 360.0,
+   "id": "E08",
+   "n_points": 22,
+   "reason": "S1 Section 13.4.9: about 50 m before building B06",
+   "type": "E"
+  },
+  {
+   "axis_depth_m": 25.85,
+   "chainage_m": 385.0,
+   "id": "E09",
+   "n_points": 22,
+   "reason": "S1 Section 13.4.9: about 25 m before building B06",
+   "type": "E"
+  },
+  {
    "axis_depth_m": 25.84,
    "chainage_m": 416.0,
-   "id": "E06",
+   "id": "E10",
    "n_points": 22,
    "reason": "S1 Section 13.4.9: about 50 m before building B07",
    "type": "E"
@@ -51,7 +83,7 @@
   {
    "axis_depth_m": 25.59,
    "chainage_m": 441.0,
-   "id": "E07",
+   "id": "E11",
    "n_points": 22,
    "reason": "S1 Section 13.4.9: about 25 m before building B07",
    "type": "E"
@@ -59,7 +91,7 @@
   {
    "axis_depth_m": 25.0,
    "chainage_m": 500.0,
-   "id": "E08",
+   "id": "E12",
    "n_points": 22,
    "reason": "S1 Cl. 13.4.2.1 b): every 200 m of tunnel",
    "type": "E"
@@ -67,7 +99,7 @@
   {
    "axis_depth_m": 22.6667,
    "chainage_m": 700.0,
-   "id": "E09",
+   "id": "E13",
    "n_points": 22,
    "reason": "S1 Cl. 13.4.2.1 b): every 200 m of tunnel",
    "type": "E"
@@ -75,7 +107,7 @@
   {
    "axis_depth_m": 22.3867,
    "chainage_m": 721.0,
-   "id": "E10",
+   "id": "E14",
    "n_points": 14,
    "reason": "S1 Section 13.4.9: about 50 m before building B11",
    "type": "E"
@@ -83,7 +115,7 @@
   {
    "axis_depth_m": 22.0533,
    "chainage_m": 746.0,
-   "id": "E11",
+   "id": "E15",
    "n_points": 14,
    "reason": "S1 Section 13.4.9: about 25 m before building B11",
    "type": "E"
@@ -91,7 +123,7 @@
   {
    "axis_depth_m": 20.0,
    "chainage_m": 900.0,
-   "id": "E12",
+   "id": "E16",
    "n_points": 14,
    "reason": "S1 Cl. 13.4.2.1 b): every 200 m of tunnel",
    "type": "E"
@@ -121,7 +153,7 @@
    ],
    "markers": 3,
    "rank": 11,
-   "real_time": false,
+   "real_time": true,
    "tensile_strain_monitoring": false
   },
   {
@@ -173,7 +205,7 @@
    ],
    "markers": 3,
    "rank": 1,
-   "real_time": false,
+   "real_time": true,
    "tensile_strain_monitoring": false
   },
   {
@@ -264,11 +296,11 @@
  ],
  "counts": {
   "building_points": 36,
-  "buildings_real_time": 4,
+  "buildings_real_time": 6,
   "buildings_tensile_strain": 0,
   "type_d_points": 74,
-  "type_e_arrays": 12,
-  "type_e_points": 232,
+  "type_e_arrays": 16,
+  "type_e_points": 312,
   "type_f_arrays": 1
  },
  "note": "Type F arrays add subsurface instruments (inclinometers, extensometers, piezometers); only their number is given here."

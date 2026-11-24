@@ -42,6 +42,7 @@ in tension; sagging = ground surface concave upwards.
 | 22 | `damage_category` | limits 0.05, 0.075, 0.15, 0.3 % | S1 Table 14.2; S3 Table 2 | `test_damage_category_boundaries`, `test_damage_chart_intercepts_on_the_strain_axis` | A strain exactly on a boundary goes to the higher category (ASSUMPTION). Category 4 stands for "4 to 5". |
 | 23 | `stage1_negligible` | settlement < 10 mm and slope < 1:500 | S1 Section 14.3.6; S3 section 5.2 | `test_stage1_needs_both_settlement_and_slope_below_the_limits` | Both conditions are needed. |
 | 24 | `assess_segment` | Delta = largest gap between profile and chord; eps_h = (u_b - u_a) / L | S3 sections 4.2 and 4.3 | `test_hand_worked_hogging_span`, `test_sagging_span_values` | S3 says the maximum of Delta is unlikely to be at mid-span and should be searched numerically; that is what is done. |
+| 24a | `assess_segment(compression_relief=False)` | compressive eps_h set to zero in sagging spans | none: a cautious variant, not a published rule | `test_compressive_strain_option_only_affects_sagging_spans` | Eq. 9 and 10 as written let compression offset bending; S3 only says the largest combined strain "will usually occur in the hogging zone". The variant raises B11 from category 1 to 2 (README). |
 | 25 | `assess_facade` | cut at points of inflexion and at the trough limit; largest total strain governs | S3 sections 4.1 and 5.3 | `test_facade_is_cut_at_inflexion_points_and_at_the_trough_limit`, `test_twin_tunnel_profile_is_partitioned_at_every_inflexion_point` | With two tunnels the profile can have two or four points of inflexion; they are found numerically. |
 | 26 | `final_category` | Stage 2 category + three indices, capped at 5 | S1 Section 14.3.10 | `test_final_category_adds_sensitivity_indices_and_caps_at_five` | The cap at 5 is this study's choice; the table has no category above 5. |
 
@@ -50,17 +51,37 @@ in tension; sagging = ground surface concave upwards.
 | # | Function | Rule or equation | Source | Verified by (tests) | Review note |
 |---|---|---|---|---|---|
 | 27 | `screening.action_for` | low risk only for categories 0 and 1; piled, mixed and poor-condition buildings routed out | S1 Sections 14.3.6 to 14.3.9 | `test_action_rules` | Revision A3 is one category stricter than Revision A2; a mutant with the A2 rule is killed. |
-| 28 | `screening.footprint_extremes` | slope = largest of transverse (first drive, both drives) and transient longitudinal S_trans / (i sqrt(2 pi)) | derivative of 11 at the face | `test_footprint_extremes_cover_all_three_slopes` | The transient longitudinal slope is included because a building over the centre line sees almost no transverse slope. |
+| 28 | `screening.footprint_extremes` | slope = largest of transverse (first drive, both drives) and transient longitudinal S_trans / (i sqrt(2 pi)) | derivative of 11 at the face | `test_footprint_extremes_cover_all_three_slopes`, `test_footprint_slope_is_the_largest_of_the_three_cases` | The transient longitudinal slope is included because a building over the centre line sees almost no transverse slope. The second test builds cases in which each of the three governs. |
+| 28a | `screening.tunnel_under_footprint` | any part of y0 - D/2 to y0 + D/2 under the footprint | S1 Section 13.4.9 ("directly or partially underneath any part of a building") | `test_tunnel_under_footprint_counts_partial_overlap`, `test_approach_arrays_before_buildings_over_a_tunnel` | The first version asked for the centre line to be under the footprint, which missed B02 and B06. |
+| 28b | `screening.existing_tunnel_check` | largest free-field settlement and gradient at the invert of the existing tunnel against 15 mm and 1:1000 | S2 Table 2(b); S4 Eq. 7-8 for the trough at depth | `test_existing_tunnel_check` | A proxy: the existing tunnel is assumed to follow the free-field ground. Only the gradient part of "15 mm or 1:1000, whichever is lesser" is checked. |
 | 29 | `screening.stage2_cases` | first drive alone, both drives, each face passing | S3 section 2.4 | `test_stage2_cases_first_drive_can_govern` | S3 notes one tunnel can be worse than the pair; building B07 is such a case. |
 | 30 | `uncertainty.lognormal_params` | sigma = z95 - sqrt(z95^2 - 2 ln(q95/mean)) | algebra | `test_lognormal_matches_mean_and_95th_percentile` | Shape is an ASSUMPTION; the two moments are from S5 Table 2. |
 | 31 | `uncertainty.characteristic_value` | mean + t sd | S5 section 4.5.1 | `test_characteristic_volume_loss_worked_example` | Reproduces the worked example in S5 (0.7%). |
 | 32 | `monitoring.review_levels` | work suspension = design-basis prediction (with a floor); alert = factor x that | S1 Cl. 13.7.3-13.7.4 for the definitions | `test_review_levels`, `test_every_instrument_has_consistent_review_levels` | S1 gives no ratio; the factor 0.7, the floor and the heave levels are ASSUMPTIONS. |
 | 33 | `monitoring.classify_reading` | settlement and heave judged against their own levels; reaching a level counts | S1 Cl. 13.7.6 to 13.7.8 | `test_classify_reading_settlement_and_heave`, `test_classify_reading_uses_the_right_level_for_each_direction` | |
-| 34 | `monitoring.TYPE_E_OFFSETS`, `array_count` | 0.5 Z, 8 x 0.25 Z, 0.5 Z; one array per spacing and part thereof | S1 Figures 13.5 and 13.6 (read from the figure); Cl. 13.4.2.1 | `test_constants_are_the_cited_lta_values`, `test_array_count_every_spacing_and_part_thereof` | |
-| 35 | `backanalysis.fit_gaussian` | least squares on (V, K); covariance sigma^2 (J'J)^-1 | standard | `test_noise_free_readings_recover_the_parameters_exactly`, `test_covariance_is_sigma_squared_times_inverse_normal_matrix`, `test_confidence_interval_coverage` | 95% intervals cover the true values in about 95% of repeated synthetic arrays. |
-| 36 | `backanalysis.fit_loglinear` | ln(S/Smax) = -(x/z0)^2 / (2 K^2); K = sqrt(-1 / (2 slope)) | S5 section 4.1.1 | `test_loglinear_method_details` | The equations in S5 are images; the relation follows from equations 1 and 2 of that paper. Biased when small readings are kept (see README). |
-| 37 | `backanalysis.departure_test` | z = (reading - prediction) / sigma; chi-square on the sum of squares | standard | `test_departure_test` | Thresholds are ASSUMPTIONS. |
+| 34 | `monitoring.TYPE_E_OFFSETS`, `array_count` | 0.5 Z, 8 x 0.25 Z, 0.5 Z; one array per spacing and part thereof | S1 Figures 13.5 and 13.6 (read from the figure); Cl. 13.4.2.1 | `test_constants_are_the_cited_lta_values`, `test_array_count_every_spacing_and_part_thereof` | Type F is wider (two spacings of 0.5 Z at each end) and carries subsurface instruments; only the number of Type F arrays is given here. |
+| 34a | `monitoring.zone_half_width` | 1.5 Z beyond the centre line of the outer tunnel | S1 Figure 13.3 (read from the figure) | `test_monitoring_zone_reaches_one_and_a_half_z_beyond_the_outer_tunnel`, `test_building_plan_follows_the_cited_rules` | The zones of the two tunnels are joined. |
+| 35 | `backanalysis.fit_gaussian` | least squares on (V, K); covariance sigma^2 (J'J)^-1 | standard | `test_noise_free_readings_recover_the_parameters_exactly`, `test_covariance_is_sigma_squared_times_inverse_normal_matrix`, `test_confidence_interval_coverage`, `test_fit_with_the_tunnel_off_the_origin` | 95% intervals cover the true values in about 95% of repeated synthetic arrays. |
+| 36 | `backanalysis.fit_loglinear` | ln(S/Smax) = -(x/z0)^2 / (2 K^2); K = sqrt(-1 / (2 slope)) | S5 section 4.1.1 | `test_loglinear_method_details`, `test_smax_comes_only_from_readings_near_the_centre_line` | The equations in S5 are images; the relation follows from equations 1 and 2 of that paper. Biased when small readings are kept (see README). |
+| 37 | `backanalysis.departure_test` | z = (reading - prediction) / sigma; chi-square on the sum of squares | standard | `test_departure_test`, `test_departure_chi_square_has_one_degree_of_freedom_per_reading` | Thresholds are ASSUMPTIONS. The prediction is not fitted to the readings, so the chi-square has one degree of freedom per reading. |
 | 38 | `backanalysis.project_final` | final = reading / Phi((x_face - x) / i) | inverse of 11 | `test_project_final` | Inherits the open-face limitation of 11. |
+
+## Re-checked against the sources in the final review
+
+On 2026-11-24 the four documents that carry the equations and limits were downloaded again and the passages below
+were read from the page images, not only from extracted text. Page numbers are those of the PDF files.
+
+| Source | Passages read | Result |
+|---|---|---|
+| S3 (Mair, Taylor and Burland 1996), PDF pp. 3-6 | Eq. 1 to 10; Table 2; sections 4.1 to 4.5 and 5.2 to 5.3; Fig. 4 | Every equation as implemented (rows 1-8, 17-25). Eq. 6 is printed as a magnitude, Sh = (y / z0) Sv, with the direction stated in words; the code's sign carries that direction. The 2.5 i limit is stated for a single tunnel. |
+| S1 (LTA CDC A3), PDF pp. 296-321 | Cl. 13.4.2.1 to 13.4.2.4, 13.4.7, 13.4.9, 13.7; Figures 13.3, 13.5, 13.6; Cl. 14.2.1.1 to 14.2.1.9; Tables 14.1, 14.2; Sections 14.3.6 to 14.3.10 | Values as used. Section 13.4.9 covers a tunnel "directly or partially underneath", which the code had read too narrowly (row 28a). Under the heading 14.3.6 the paragraphs are numbered 14.3.5.x in the PDF; the heading number is cited here. |
+| S5 (Ma et al. 2023), pp. 2064-2069 | Section 4.1.1 and its assumptions; section 4.5.1; Table 2 rows 7 to 9 | Table values as in inputs/scenario.json. Smax is taken from points within 3 m of the centre line and about 10% of points were discarded in the paper; the estimator comparison here has no such screening. |
+| S2 (LTA Code of Practice for Railway Protection 2024), PDF p. 71 | Table 2(b), bored tunnels | 15 mm total movement in any direction; differential movement 15 mm or 1:1000, whichever is lesser (row 28b). |
+
+In addition, the 79 supporting quotations in `data/facts.csv` that came from these four sources were matched
+again against text extracted from the downloaded files, after removing spaces and punctuation, and all 79
+matched. Four statements (F125 to F128) were added from these readings, so the four sources now carry 83 of the
+115 VERIFIED statements. The quotations from S4 and S6 to S13 were not re-checked in this review.
 
 ## What the review changed
 
@@ -78,6 +99,25 @@ in tension; sagging = ground surface concave upwards.
    discarded the point above one centre line. The merge now always keeps centre-line points.
 6. **Straight-line estimator.** With small readings included it over-estimates K and V on synthetic data; the
    default cut-off was raised to 0.2 Smax and the comparison is reported.
+7. **Tunnel partly under a building.** Section 13.4.9 applies where "any part of the tunnel is directly or partially
+   underneath any part of a building". The code first asked for the centre line to be under the footprint. With the
+   excavated width counted, B02 and B06 are added: six buildings are monitored in real time, not four, and four
+   more approach arrays are placed.
+8. **Face sweep.** The largest transient strain of a facade parallel to the tunnels was searched over 25 face
+   positions, and over 17 positions on a coarser grid in the Monte Carlo run. Against a 201-position sweep the
+   first fell up to 0.3% short (B07) and the second up to 1.9% short (B09), a small bias in the unsafe direction.
+   Both now use 49 positions, within 0.07% of the 201-position value for every building and drive.
+9. **Compressive strain in sagging spans.** Eq. 9 and 10 are applied as written, and a cautious variant with the
+   relief removed is reported next to them (row 24a).
+10. **Existing tunnel.** The gradient of the free-field trough at the invert level is now compared with the 1:1000
+    differential limit of S2 Table 2(b), as well as the settlement with the 15 mm limit.
+11. **Independent workbook check.** The workbook tests read the committed file, so an error planted in a workbook
+    formula was caught only by the comparison of that file with a fresh one. They now recalculate a freshly written
+    workbook for two sets of inputs (the second crosses the whole trough so that all three spans and the 2.5 i limit
+    are used); the comparison with the committed file is a separate drift test.
+12. **Drift tests.** The mutation harness was written to leave out "golden" tests, but none was marked. Tests that
+    compare committed files with a fresh run (results, CSV tables, README, technical note, workbook) are now marked
+    and left out, so that every kill comes from an independent expectation.
 
 ## Known limits of superposition and of the longitudinal curve
 

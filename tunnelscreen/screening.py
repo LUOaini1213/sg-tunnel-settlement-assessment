@@ -124,11 +124,20 @@ def longitudinal_offsets(b: Building, t: Tunnel) -> list[float]:
     return ys
 
 
-def worst_longitudinal(b: Building, t: Tunnel, n_face: int = 25, n_grid: int = 41,
-                       hogging_neutral_axis: str = "bottom") -> tuple[float, str]:
+def tunnel_under_footprint(b: Building, t: Tunnel) -> bool:
+    """True when any part of the excavated tunnel, y0 - D/2 to y0 + D/2 in plan, lies under the
+    footprint. S1 Section 13.4.9 applies "where any part of the tunnel is directly or partially
+    underneath any part of a building"; a tunnel edge that only touches the footprint edge does
+    not count."""
+    return b.y_start < t.y0 + t.D / 2.0 and b.y_end > t.y0 - t.D / 2.0
+
+
+def worst_longitudinal(b: Building, t: Tunnel, n_face: int = 49, n_grid: int = 41,
+                       hogging_neutral_axis: str = "bottom", compression_relief: bool = True) -> tuple[float, str]:
     """Largest transient tensile strain in a facade parallel to tunnel ``t`` as its face advances.
 
-    The face is stepped from 2.5 i before the building to 2.5 i beyond it.
+    The face is stepped from 2.5 i before the building to 2.5 i beyond it. For every SYNTHETIC building
+    on shallow foundations, 49 positions give a result within 0.1% of a 201-position sweep.
     """
     i = gf.trough_width(t.K, t.z0)
     x0, x1 = b.chainage - b.along_length / 2.0, b.chainage + b.along_length / 2.0
@@ -136,7 +145,8 @@ def worst_longitudinal(b: Building, t: Tunnel, n_face: int = 25, n_grid: int = 4
     for y in longitudinal_offsets(b, t):
         for xf in np.linspace(x0 - gf.TROUGH_LIMIT_FACTOR * i, x1 + gf.TROUGH_LIMIT_FACTOR * i, n_face):
             r = bld.assess_facade(longitudinal_profile(t, y, float(xf)), x0, x1, b.height, b.e_over_g,
-                                  n_grid=n_grid, hogging_neutral_axis=hogging_neutral_axis)
+                                  n_grid=n_grid, hogging_neutral_axis=hogging_neutral_axis,
+                                  compression_relief=compression_relief)
             if r.eps_max > best:
                 best, gov = r.eps_max, r.governing
     return best, gov
@@ -160,7 +170,7 @@ def footprint_extremes(b: Building, tunnels: Sequence[Tunnel], n: int = 201) -> 
 
 
 def stage2_cases(b: Building, tunnels: Sequence[Tunnel], include_longitudinal: bool = True,
-                 n_grid: int = 81, hogging_neutral_axis: str = "bottom") -> dict:
+                 n_grid: int = 81, hogging_neutral_axis: str = "bottom", compression_relief: bool = True) -> dict:
     """Maximum tensile strain for each stage of construction considered.
 
     Cases: transverse facade after the first drive alone and after both drives; facade parallel to
@@ -171,11 +181,11 @@ def stage2_cases(b: Building, tunnels: Sequence[Tunnel], include_longitudinal: b
     first = [tunnels[0]]
     for name, ts in (("transverse, first drive only", first), ("transverse, both drives", list(tunnels))):
         r = bld.assess_facade(transverse_profile(ts), b.y_start, b.y_end, b.height, b.e_over_g,
-                              n_grid=n_grid, hogging_neutral_axis=hogging_neutral_axis)
+                              n_grid=n_grid, hogging_neutral_axis=hogging_neutral_axis, compression_relief=compression_relief)
         cases[name] = (r.eps_max, r.governing, r.max_deflection_ratio)
     if include_longitudinal:
         for k, t in enumerate(tunnels):
-            eps, gov = worst_longitudinal(b, t, hogging_neutral_axis=hogging_neutral_axis)
+            eps, gov = worst_longitudinal(b, t, hogging_neutral_axis=hogging_neutral_axis, compression_relief=compression_relief)
             cases[f"longitudinal, drive {k + 1} passing"] = (eps, gov, float("nan"))
     return cases
 
@@ -199,11 +209,12 @@ def action_for(foundation: str, stage1_pass: bool, final_cat: int | None, indice
     return "Stage 3 detailed evaluation (S1 Section 14.3.6); outside this study"
 
 
-def assess_building(b: Building, tunnels: Sequence[Tunnel], include_longitudinal: bool = True) -> dict:
+def assess_building(b: Building, tunnels: Sequence[Tunnel], include_longitudinal: bool = True,
+                    compression_relief: bool = True) -> dict:
     """Stage 1 and, for buildings on shallow foundations, Stage 2 with sensitivity indices."""
     smax, slope_max = footprint_extremes(b, tunnels)
     s1 = bld.stage1_negligible(smax, slope_max)
-    above_tunnel = any(b.y_start < t.y0 < b.y_end for t in tunnels)
+    above_tunnel = any(tunnel_under_footprint(b, t) for t in tunnels)
     row = {
         "id": b.id, "description": b.description, "chainage_m": b.chainage, "foundation": b.foundation,
         "structure": b.structure, "above_tunnel": above_tunnel,
@@ -214,7 +225,7 @@ def assess_building(b: Building, tunnels: Sequence[Tunnel], include_longitudinal
         "cases": {},
     }
     if b.foundation == "shallow":
-        cases = stage2_cases(b, tunnels, include_longitudinal)
+        cases = stage2_cases(b, tunnels, include_longitudinal, compression_relief=compression_relief)
         name = max(cases, key=lambda c: cases[c][0])
         eps = cases[name][0]
         cat = bld.damage_category(eps)
@@ -238,7 +249,7 @@ def priority_key(row: dict) -> tuple:
     return (-needs_more, -cat, -eps, -row["max_settlement_mm"])
 
 
-def screen_all(scn: dict, buildings: Sequence[Building], basis: str = "design") -> list[dict]:
+def screen_all(scn: dict, buildings: Sequence[Building], basis: str = "design", compression_relief: bool = True) -> list[dict]:
     """Run the staged screening for every building.
 
     ``basis`` is "design" (S1 Table 14.1 values), "mean" or "characteristic" (S5 observed volume
@@ -255,7 +266,7 @@ def screen_all(scn: dict, buildings: Sequence[Building], basis: str = "design") 
             vl = zone["observed_vl"]["characteristic_95"]
         else:
             raise ValueError(basis)
-        row = assess_building(b, tunnels_at(scn, b.chainage, VL=vl))
+        row = assess_building(b, tunnels_at(scn, b.chainage, VL=vl), compression_relief=compression_relief)
         row.update(zone=zone["id"], formation=zone["formation"], K=zone["design"]["K"], VL_pct=vl,
                    axis_depth_m=axis_depth(scn, b.chainage))
         rows.append(row)
@@ -280,15 +291,22 @@ def existing_tunnel_check(scn: dict, basis_vl: float | None = None) -> dict:
     z_invert = et["axis_depth_m"] + et["diameter_m"] / 2.0
     ys = np.linspace(-60.0, 60.0, 1201)
     s = gf.subsurface_settlement(ys, z_invert, tunnels)
-    grad = np.gradient(s, ys)
     smax_mm = float(s.max() * 1000.0)
+    # The existing tunnel crosses at right angles, so the gradient along it is the transverse
+    # gradient of the new troughs at its level. Over the whole crossing the two drives together give
+    # the steeper gradient (on the outer flank of each trough both slopes have the same sign), so
+    # the first drive alone need not be checked here, unlike a building of limited width.
+    grad = float(np.max(np.abs(np.gradient(s, ys))))
+    limit_1_in = et["allowable_differential_1_in"]
     return {
         "chainage_m": ch, "level_checked_m": z_invert, "new_axis_depth_m": tunnels[0].z0,
         "clear_distance_m": tunnels[0].z0 - tunnels[0].D / 2.0 - z_invert,
         "VL_pct": tunnels[0].VL, "K": tunnels[0].K,
         "max_subsurface_settlement_mm": smax_mm,
         "surface_settlement_mm": float(gf.settlement(ys, tunnels).max() * 1000.0),
-        "max_slope_1_in": float(1.0 / np.max(np.abs(grad))),
+        "max_slope_1_in": 1.0 / grad,
         "allowable_total_movement_mm": et["allowable_total_movement_mm"],
         "exceeds_allowable": smax_mm > et["allowable_total_movement_mm"],
+        "allowable_differential_1_in": limit_1_in,
+        "exceeds_differential_gradient": grad > 1.0 / limit_1_in,
     }

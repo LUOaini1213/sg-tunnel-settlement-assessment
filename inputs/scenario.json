@@ -46,7 +46,9 @@
     "axis_depth_m": 10.0,
     "diameter_m": 6.0,
     "allowable_total_movement_mm": 15.0,
-    "allowable_source": "S2 Table 2(b): bored tunnel, total movement in any direction 15 mm"
+    "allowable_source": "S2 Table 2(b): bored tunnel, total movement in any direction 15 mm",
+    "allowable_differential_1_in": 1000.0,
+    "allowable_differential_source": "S2 Table 2(b): bored tunnel, differential movement in any plane 15 mm or 1:1000, whichever is lesser; only the gradient part is checked here"
   },
   "assumptions": {
     "poisson_ratio": {"value": 0.3, "label": "REAL", "basis": "S3 Eq. 10 is written for Poisson's ratio 0.3"},

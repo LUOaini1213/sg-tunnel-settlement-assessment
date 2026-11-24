@@ -25,6 +25,12 @@ TENSILE_STRAIN_MONITORING_PCT = 0.1  # S1 Cl. 13.4.7.2
 MONITORING_ZONE_FACTOR = 1.5  # S1 Figure 13.3: 1.5 Z each side of a tunnel
 
 
+def zone_half_width(z0: float, tunnel_offsets: Sequence[float]) -> float:
+    """Half-width of the building monitoring zone about the alignment datum: 1.5 Z beyond the
+    centre line of the outer tunnel on each side (S1 Figure 13.3, one zone per tunnel, joined)."""
+    return max(abs(y) for y in tunnel_offsets) + MONITORING_ZONE_FACTOR * z0
+
+
 def array_count(length_m: float, spacing_m: float) -> int:
     """One array "for every [spacing] (and part thereof)" of tunnel (S1 Cl. 13.4.2.1)."""
     return int(math.ceil(length_m / spacing_m - 1e-9))
@@ -141,7 +147,7 @@ def instrumentation_plan(scn: dict, buildings: Sequence[sc.Building], screening_
     for k in range(n_e):
         ch = min((k + 0.5) * TYPE_E_SPACING_M, length)
         e_chainages[round(ch, 1)] = "S1 Cl. 13.4.2.1 b): every 200 m of tunnel"
-    # additional Type E arrays 25 m and 50 m before each building in use that a tunnel passes under
+    # additional Type E arrays 25 m and 50 m before each building in use with any part of a tunnel under it
     for b in buildings:
         row = rows_by_id[b.id]
         if b.in_use and row["above_tunnel"]:
@@ -163,8 +169,7 @@ def instrumentation_plan(scn: dict, buildings: Sequence[sc.Building], screening_
     building_plan = []
     for b in buildings:
         row = rows_by_id[b.id]
-        z0 = sc.axis_depth(scn, b.chainage)
-        half_zone = max(abs(y) for y in y0s) + MONITORING_ZONE_FACTOR * z0
+        half_zone = zone_half_width(sc.axis_depth(scn, b.chainage), y0s)
         in_zone = b.y_start < half_zone and b.y_end > -half_zone
         if not in_zone:
             building_plan.append({"id": b.id, "in_monitoring_zone": False, "markers": 0, "real_time": False,
@@ -178,7 +183,7 @@ def instrumentation_plan(scn: dict, buildings: Sequence[sc.Building], screening_
         eps = row["eps_max_pct"]
         building_plan.append({
             "id": b.id, "in_monitoring_zone": True, "markers": len(offs), "marker_offsets_m": offs,
-            # S1 Section 13.4.9 a): buildings in use with a tunnel directly underneath are monitored in real time
+            # S1 Section 13.4.9 a): buildings in use with a tunnel directly or partially underneath are monitored in real time
             "real_time": bool(b.in_use and row["above_tunnel"]),
             # S1 Cl. 13.4.7.2: tensile strain monitoring where the predicted tensile strain exceeds 0.1%
             "tensile_strain_monitoring": bool(eps is not None and eps > TENSILE_STRAIN_MONITORING_PCT),

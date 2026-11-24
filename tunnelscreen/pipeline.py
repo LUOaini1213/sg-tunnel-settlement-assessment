@@ -28,9 +28,14 @@ WORKBOOK_PATH = ROOT / "workbook" / "trough_and_stage2.xlsx"
 WORKBOOK_BUILDING = "B07"
 
 
-def _dump(name: str, obj) -> None:
-    RESULTS.mkdir(exist_ok=True)
-    (RESULTS / name).write_text(json.dumps(obj, indent=1, sort_keys=True, default=_default) + "\n", encoding="utf-8", newline="\n")
+def to_json(obj) -> str:
+    """The exact text written to a results file."""
+    return json.dumps(obj, indent=1, sort_keys=True, default=_default) + "\n"
+
+
+def _dump(name: str, obj, directory: Path = RESULTS) -> None:
+    directory.mkdir(parents=True, exist_ok=True)
+    (directory / name).write_text(to_json(obj), encoding="utf-8", newline="\n")
 
 
 def _default(o):
@@ -211,50 +216,99 @@ def estimator_comparison(scn: dict, rng: np.random.Generator, trials: int = 300)
     return res
 
 
+# ----------------------------------------------------------------------------- workbook
+def build_workbook(path: Path, scn: dict | None = None, buildings=None) -> Path:
+    """Write the Excel workbook for building WORKBOOK_BUILDING with the design-basis inputs."""
+    scn = scn or sc.load_scenario()
+    by_id = {b.id: b for b in (buildings or sc.load_buildings())}
+    b = by_id[WORKBOOK_BUILDING]
+    ts = sc.tunnels_at(scn, b.chainage)
+    return wbk.build(path, D=ts[0].D, z0=ts[0].z0, K=ts[0].K, VL=ts[0].VL, y0_first=ts[0].y0, y0_second=ts[1].y0,
+                     second_factor=scn["alignment"]["second_tunnel_vl_factor"], facade_start=b.y_start, facade_end=b.y_end,
+                     H=b.height, e_over_g=b.e_over_g, nu=scn["assumptions"]["poisson_ratio"]["value"],
+                     building_label=f"building {b.id} (SYNTHETIC)")
+
+
+def sagging_compression_variant(base_rows: list[dict], variant_rows: list[dict]) -> list[dict]:
+    """Design-basis Stage 2 results with and without the relief from compressive average strain in
+    sagging spans (see building.assess_segment)."""
+    var = {r["id"]: r for r in variant_rows}
+    out = []
+    for r in sorted(base_rows, key=lambda r: r["id"]):
+        if not r["stage2_applicable"]:
+            continue
+        v = var[r["id"]]
+        out.append({"id": r["id"], "eps_max_pct": r["eps_max_pct"], "eps_max_pct_variant": v["eps_max_pct"],
+                    "stage2_category": r["stage2_category"], "stage2_category_variant": v["stage2_category"],
+                    "governing_mode_variant": v["governing_mode"], "action": r["action"], "action_variant": v["action"]})
+    return out
+
+
 # ----------------------------------------------------------------------------- main
-def run(samples: int | None = None, figures: bool = True) -> dict:
+def existing_tunnel_results(scn: dict) -> dict:
+    """Free-field check of the SYNTHETIC existing tunnel on the three volume-loss bases."""
+    zone = sc.zone_at(scn, scn["existing_tunnel"]["chainage_m"])
+    return {"design": sc.existing_tunnel_check(scn),
+            "characteristic": sc.existing_tunnel_check(scn, zone["observed_vl"]["characteristic_95"]),
+            "mean": sc.existing_tunnel_check(scn, zone["observed_vl"]["mean"])}
+
+
+def core_results(scn: dict, buildings) -> dict:
+    """Every result except the Monte Carlo runs and the tornado. Deterministic and quick; the golden
+    tests recompute it and compare it with the committed files."""
+    screening = {basis: sc.screen_all(scn, buildings, basis) for basis in ("design", "characteristic", "mean")}
+    screening["sagging_compression_variant"] = sagging_compression_variant(
+        screening["design"], sc.screen_all(scn, buildings, "design", compression_relief=False))
+    plan = mon.instrumentation_plan(scn, buildings, screening["design"])
+    back = backanalysis_demo(scn, plan)
+    instruments = plan.pop("instruments")
+    return {"verification": verification(), "screening": screening, "existing": existing_tunnel_results(scn),
+            "plan": plan, "instruments": instruments, "back": back}
+
+
+def tornado_results(scn: dict, buildings, design_rows) -> list[dict]:
+    """Sensitivity study for the three highest-ranked buildings on shallow foundations."""
+    by_id = {b.id: b for b in buildings}
+    return [un.tornado(scn, by_id[r["id"]]) for r in design_rows if r["stage2_applicable"]][:3]
+
+
+INSTRUMENT_COLUMNS = ["id", "type", "chainage_m", "offset_m", "predicted_expected_mm", "predicted_design_mm", "alert_mm",
+                      "suspension_mm", "heave_alert_mm", "heave_suspension_mm", "reason"]
+SCREENING_COLUMNS = ["rank", "id", "description", "chainage_m", "formation", "foundation", "structure", "max_settlement_mm",
+                     "max_slope_1_in", "stage1_negligible", "eps_max_pct", "governing_case", "governing_mode", "stage2_category",
+                     "sensitivity_index_sum", "final_category", "action"]
+
+
+def instrument_rows(instruments) -> list[list]:
+    return [INSTRUMENT_COLUMNS] + [[f"{i[c]:.2f}" if isinstance(i[c], float) else i[c] for c in INSTRUMENT_COLUMNS] for i in instruments]
+
+
+def screening_rows(rows) -> list[list]:
+    return [SCREENING_COLUMNS] + [[("" if r[c] is None else (f"{r[c]:.4g}" if isinstance(r[c], float) else r[c]))
+                                   for c in SCREENING_COLUMNS] for r in rows]
+
+
+def _write_csv(path: Path, rows) -> None:
+    with path.open("w", encoding="utf-8", newline="") as f:
+        csv.writer(f, lineterminator="\n").writerows(rows)
+
+
+def run(samples: int | None = None, figures: bool = True, out_dir: Path | None = None) -> dict:
+    """Rebuild results/, the figures and the workbook. ``out_dir`` (default: the repository) lets a
+    smoke run write somewhere else."""
+    base = Path(out_dir) if out_dir is not None else ROOT
+    results_dir = base / "results"
     scn = sc.load_scenario()
     buildings = sc.load_buildings()
     a = scn["assumptions"]
     n = samples or a["monte_carlo_samples"]["value"]
     seed = a["random_seed"]["value"]
 
-    ver = verification()
-    screening = {basis: sc.screen_all(scn, buildings, basis) for basis in ("design", "characteristic", "mean")}
-    existing = {"design": sc.existing_tunnel_check(scn),
-                "characteristic": sc.existing_tunnel_check(scn, sc.zone_at(scn, scn["existing_tunnel"]["chainage_m"])["observed_vl"]["characteristic_95"]),
-                "mean": sc.existing_tunnel_check(scn, sc.zone_at(scn, scn["existing_tunnel"]["chainage_m"])["observed_vl"]["mean"])}
+    core = core_results(scn, buildings)
     mc = un.monte_carlo(scn, buildings, n, seed, correlation=a["vl_correlation_between_drives"]["value"])
     mc_indep = un.monte_carlo(scn, buildings, n, seed, correlation=0.0)
-    shallow_ranked = [r["id"] for r in screening["design"] if r["stage2_applicable"]][:3]
-    by_id = {b.id: b for b in buildings}
-    tornados = [un.tornado(scn, by_id[i]) for i in shallow_ranked]
-    plan = mon.instrumentation_plan(scn, buildings, screening["design"])
-    back = backanalysis_demo(scn, plan)
-
-    # workbook for one building
-    wb_b = by_id[WORKBOOK_BUILDING]
-    ts = sc.tunnels_at(scn, wb_b.chainage)
-    wbk.build(WORKBOOK_PATH, D=ts[0].D, z0=ts[0].z0, K=ts[0].K, VL=ts[0].VL, y0_first=ts[0].y0, y0_second=ts[1].y0,
-              second_factor=scn["alignment"]["second_tunnel_vl_factor"], facade_start=wb_b.y_start, facade_end=wb_b.y_end,
-              H=wb_b.height, e_over_g=wb_b.e_over_g, nu=a["poisson_ratio"]["value"], building_label=f"building {wb_b.id} (SYNTHETIC)")
-
-    instruments = plan.pop("instruments")
-    with (RESULTS / "instruments.csv").open("w", encoding="utf-8", newline="") as f:
-        cols = ["id", "type", "chainage_m", "offset_m", "predicted_expected_mm", "predicted_design_mm", "alert_mm",
-                "suspension_mm", "heave_alert_mm", "heave_suspension_mm", "reason"]
-        w = csv.writer(f, lineterminator="\n")
-        w.writerow(cols)
-        for inst in instruments:
-            w.writerow([f"{inst[c]:.2f}" if isinstance(inst[c], float) else inst[c] for c in cols])
-    with (RESULTS / "screening_design_basis.csv").open("w", encoding="utf-8", newline="") as f:
-        cols = ["rank", "id", "description", "chainage_m", "formation", "foundation", "structure", "max_settlement_mm", "max_slope_1_in",
-                "stage1_negligible", "eps_max_pct", "governing_case", "governing_mode", "stage2_category", "sensitivity_index_sum",
-                "final_category", "action"]
-        w = csv.writer(f, lineterminator="\n")
-        w.writerow(cols)
-        for r in screening["design"]:
-            w.writerow([("" if r[c] is None else (f"{r[c]:.4g}" if isinstance(r[c], float) else r[c])) for c in cols])
+    tornados = tornado_results(scn, buildings, core["screening"]["design"])
+    build_workbook(base / "workbook" / WORKBOOK_PATH.name, scn, buildings)
 
     facts = list(csv.DictReader((ROOT / "data" / "facts.csv").open(encoding="utf-8")))
     meta = {
@@ -264,19 +318,19 @@ def run(samples: int | None = None, figures: bool = True) -> dict:
         "monte_carlo_samples": n, "seed": seed, "python": platform.python_version().rsplit(".", 1)[0],
         "workbook_building": WORKBOOK_BUILDING,
     }
-    _dump("verification.json", _round(ver, 8))
-    _dump("screening.json", _round(screening))
-    _dump("existing_tunnel.json", _round(existing))
-    _dump("uncertainty.json", _round({"base": mc, "independent_drives": mc_indep, "tornado": tornados}))
-    _dump("monitoring.json", _round(plan))
-    _dump("backanalysis.json", _round(back))
-    _dump("meta.json", meta)
-    out = {"verification": ver, "screening": screening, "existing": existing, "mc": mc, "mc_indep": mc_indep,
-           "tornado": tornados, "plan": plan, "instruments": instruments, "back": back, "meta": meta}
+    results_dir.mkdir(parents=True, exist_ok=True)
+    _write_csv(results_dir / "instruments.csv", instrument_rows(core["instruments"]))
+    _write_csv(results_dir / "screening_design_basis.csv", screening_rows(core["screening"]["design"]))
+    for name, obj in (("verification.json", _round(core["verification"], 8)), ("screening.json", _round(core["screening"])),
+                      ("existing_tunnel.json", _round(core["existing"])),
+                      ("uncertainty.json", _round({"base": mc, "independent_drives": mc_indep, "tornado": tornados})),
+                      ("monitoring.json", _round(core["plan"])), ("backanalysis.json", _round(core["back"])), ("meta.json", meta)):
+        _dump(name, obj, results_dir)
+    out = dict(core, mc=mc, mc_indep=mc_indep, tornado=tornados, meta=meta)
     if figures:
         from . import figures as fig
 
-        fig.make_all(scn, buildings, out)
+        fig.make_all(scn, buildings, out, base / "docs" / "figures")
     return out
 
 
@@ -284,8 +338,9 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--samples", type=int, default=None, help="Monte Carlo samples (default: inputs/scenario.json)")
     ap.add_argument("--no-figures", action="store_true")
+    ap.add_argument("--out", default=None, help="write results/, docs/figures/ and workbook/ under this folder instead")
     args = ap.parse_args()
-    out = run(args.samples, not args.no_figures)
+    out = run(args.samples, not args.no_figures, args.out)
     d = out["screening"]["design"]
     print(f"screened {len(d)} buildings; design-basis Stage 3 or pile assessment needed for "
           f"{sum(1 for r in d if not r['action'].startswith('None'))}")

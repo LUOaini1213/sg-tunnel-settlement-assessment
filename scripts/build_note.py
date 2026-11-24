@@ -71,12 +71,14 @@ def footer(canvas, doc):
     canvas.restoreState()
 
 
-def build() -> int:
+def build(out: Path = OUT) -> int:
+    """Write the note to ``out`` and return the number of pages."""
     c = build_docs.context()
     ver = build_docs.load("verification.json")
     scr = build_docs.load("screening.json")["design"]
     unc = build_docs.load("uncertainty.json")
     back = build_docs.load("backanalysis.json")
+    ext = build_docs.load("existing_tunnel.json")["design"]
     story = []
 
     # ------------------------------------------------------------------ page 1: method
@@ -136,12 +138,15 @@ def build() -> int:
                 "compared with numerical derivatives; the numerical volume of the trough equals the volume loss; a hogging span is worked "
                 "by hand. The Excel workbook is recalculated from its formulas and agrees with the Python code to nine figures. "
                 f"Hand-written mutation testing (errors planted one at a time) killed {c['mut_first_killed']} of {c['mut_first_total']} "
-                f"on the first run and {c['mut_final_killed']} of {c['mut_final_total']} after tests were added."),
-              P("Three things the checks turned up. (a) One secondary source prints the diagonal-strain formula with (1 - nu)/2 inside the "
+                f"on the first run; the final review added {c['mut_added_total']}, of which {c['mut_added_killed']} were killed at once, "
+                f"and after tests were written for the survivors {c['mut_final_killed']} of {c['mut_final_total']} are killed."),
+              P("Four things the checks turned up. (a) One secondary source prints the diagonal-strain formula with (1 - nu)/2 inside the "
                 "square root; the primary paper, a second source and Mohr's circle give (1 + nu)/2, which is used. (b) From the beam "
                 "equations alone, hogging is worse than sagging for the same deflection ratio only for spans of about three times the "
                 "height or more; for a span equal to the height the sagging beam has the larger bending strain. (c) The first draft of "
-                "the workbook returned an absurd settlement because in Excel -x^2 means (-x)^2; the recalculation test found it."),
+                "the workbook returned an absurd settlement because in Excel -x^2 means (-x)^2; the recalculation test found it. "
+                "(d) Eq. 9 and 10 as written let a compressive average strain in a sagging span offset the bending strain, and the "
+                f"screening follows them. Setting that strain to zero instead, a cautious reading, {c['variant_text']}"),
               img("fig7_chart_check.png", 78),
               P("Figure 1. The published damage chart for L/H = 1 in hogging (S3 Fig. 4, after Burland 1995), redrawn from the implemented "
                 "equations. Circles are the intercepts read from the printed chart.", CAP),
@@ -167,14 +172,17 @@ def build() -> int:
                 f"the published mean and 95% value, and K across a stated range ({c['n_mc']} samples), the probability that a shallow-founded "
                 f"building reaches Stage 2 category 1 or higher is at most {c['max_p_cat1']}% (building {c['max_p_cat1_id']}), and the "
                 f"probability that volume loss exceeds the design value is {c['p_exceed_design_min']}% to {c['p_exceed_design_max']}%. "
-                "Volume loss dominates the sensitivity study, then K, then tunnel depth. Building B06 is slight or worse in every sample "
+                f"In the sensitivity study {c['tornado_order']}. Building B06 is slight or worse in every sample "
                 "because of its structural-form index alone."),
-              P(f"<b>Existing tunnel (SYNTHETIC).</b> Free-field settlement at the invert level of an existing tunnel 8.2 m above the new "
-                f"crowns is {c['et_design']} mm on the design basis, above the {c['et_allow']} mm allowable total movement of LTA's Code of "
-                f"Practice for Railway Protection (S2 Table 2(b)), and {c['et_mean']} mm at the mean observed volume loss. The structure is "
-                "not modelled."),
+              P(f"<b>Existing tunnel (SYNTHETIC).</b> Free-field settlement at the invert level of an existing tunnel {ext['clear_distance_m']:g} m "
+                f"above the new crowns is {c['et_design']} mm on the design basis, above the {c['et_allow']} mm allowable total movement of "
+                f"LTA's Code of Practice for Railway Protection (S2 Table 2(b)); the steepest gradient along it, 1:{c['et_slope_design']}, is "
+                f"steeper than the 1:{c['et_diff']} differential limit. At the characteristic volume loss the figures are {c['et_char']} mm "
+                f"and 1:{c['et_slope_char']}, within both. The structure is not modelled."),
               P(f"<b>Monitoring.</b> Following S1 Chapter 13: {c['n_d']} Type D points, {c['n_e']} Type E arrays, {c['n_f']} Type F array, "
-                f"{c['n_bldg_points']} building points. Work suspension level = design-basis prediction (S1 Cl. 13.7.4); alert level = "
+                f"{c['n_bldg_points']} building points. {c['n_rt']} buildings in use have part of a tunnel under them ({c['rt_edge_ids']} only "
+                "its edge) and are monitored in real time (S1 Section 13.4.9). Work suspension level = design-basis prediction "
+                "(S1 Cl. 13.7.4); alert level = "
                 f"{c['alert_factor']} of it (ASSUMPTION). <b>Back-analysis.</b> From {c['ba_n']} SYNTHETIC readings with {c['ba_sigma']} mm noise the "
                 f"least-squares fit gives V = {c['ba_vl']}% ({c['ba_vl_lo']} to {c['ba_vl_hi']}) and K = {c['ba_k']} ({c['ba_k_lo']} to "
                 f"{c['ba_k_hi']}) for a true {c['ba_true_vl']}% and {c['ba_true_k']}. No marker reaches the work suspension level, but the "
@@ -233,14 +241,22 @@ def build() -> int:
                 "S9: Peck (1969), Deep excavations and tunneling in soft ground. Full list with URLs, access dates and terms: DATA_SOURCES.md.",
                 CAP)]
 
-    doc = SimpleDocTemplate(str(OUT), pagesize=A4, leftMargin=18 * mm, rightMargin=18 * mm, topMargin=14 * mm, bottomMargin=16 * mm,
+    doc = SimpleDocTemplate(str(out), pagesize=A4, leftMargin=18 * mm, rightMargin=18 * mm, topMargin=14 * mm, bottomMargin=16 * mm,
                             title="Greenfield settlement and building damage screening for a twin bored tunnel drive (SYNTHETIC study)",
                             author="Wenjie Luo (LUOaini1213)", subject="Student-level screening study; not a design", invariant=1)
     doc.build(story, onFirstPage=footer, onLaterPages=footer)
     return doc.page
 
 
+def page_texts(path: Path) -> list[str]:
+    """Text of each page, for the drift test."""
+    from pypdf import PdfReader
+
+    return [page.extract_text() for page in PdfReader(str(path)).pages]
+
+
 if __name__ == "__main__":
-    pages = build()
-    print(f"wrote {OUT.relative_to(ROOT).as_posix()} ({pages} pages)")
+    target = Path(sys.argv[1]) if len(sys.argv) > 1 else OUT
+    pages = build(target)
+    print(f"wrote {target.name} ({pages} pages)")
     sys.exit(0 if pages == 4 else 1)

@@ -18,9 +18,12 @@ CAT_COLOURS = {None: "#9e9e9e", 0: "#2e7d32", 1: "#9ccc65", 2: "#fbc02d", 3: "#e
 TAG = "SYNTHETIC alignment and buildings. Student screening study, not a design."
 
 
+_out = [FIG]  # where _save writes; make_all can point it elsewhere for a smoke run
+
+
 def _save(fig, name: str) -> None:
-    FIG.mkdir(parents=True, exist_ok=True)
-    fig.savefig(FIG / name, dpi=130, metadata={"Software": None})
+    _out[0].mkdir(parents=True, exist_ok=True)
+    fig.savefig(_out[0] / name, dpi=130, metadata={"Software": None})
     plt.close(fig)
 
 
@@ -226,11 +229,15 @@ def fig_chart_check() -> None:
     _save(fig, "fig7_chart_check.png")
 
 
-def make_all(scn: dict, buildings, out: dict) -> None:
-    fig_trough(scn)
-    fig_longitudinal(scn)
-    fig_plan(scn, buildings, out["screening"]["design"])
-    fig_probabilities(out["mc"], out["screening"]["design"])
-    fig_tornado(out["tornado"])
-    fig_backanalysis(scn, out["back"])
-    fig_chart_check()
+def make_all(scn: dict, buildings, out: dict, fig_dir: Path = FIG) -> None:
+    _out[0] = Path(fig_dir)
+    try:
+        fig_trough(scn)
+        fig_longitudinal(scn)
+        fig_plan(scn, buildings, out["screening"]["design"])
+        fig_probabilities(out["mc"], out["screening"]["design"])
+        fig_tornado(out["tornado"])
+        fig_backanalysis(scn, out["back"])
+        fig_chart_check()
+    finally:
+        _out[0] = FIG

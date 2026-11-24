@@ -3,7 +3,7 @@
   {
    "K": 0.45,
    "VL_pct": 1.5,
-   "above_tunnel": false,
+   "above_tunnel": true,
    "action": "Stage 3 detailed evaluation (S1 Section 14.3.6); outside this study",
    "axis_depth_m": 25.7,
    "cases": {
@@ -301,11 +301,11 @@
    "axis_depth_m": 25.2,
    "cases": {
     "longitudinal, drive 1 passing": {
-     "eps_max_pct": 0.0154804,
+     "eps_max_pct": 0.0155253,
      "mode": "hogging/diagonal"
     },
     "longitudinal, drive 2 passing": {
-     "eps_max_pct": 0.0154804,
+     "eps_max_pct": 0.0155253,
      "mode": "hogging/diagonal"
     },
     "transverse, both drives": {
@@ -382,7 +382,7 @@
   {
    "K": 0.45,
    "VL_pct": 0.5,
-   "above_tunnel": false,
+   "above_tunnel": true,
    "action": "None: negligible at Stage 1",
    "axis_depth_m": 23.2,
    "cases": {
@@ -513,7 +513,7 @@
   {
    "K": 0.45,
    "VL_pct": 3.0,
-   "above_tunnel": false,
+   "above_tunnel": true,
    "action": "Stage 3 detailed evaluation (S1 Section 14.3.6); outside this study",
    "axis_depth_m": 25.7,
    "cases": {
@@ -768,11 +768,11 @@
    "axis_depth_m": 25.2,
    "cases": {
     "longitudinal, drive 1 passing": {
-     "eps_max_pct": 0.0309609,
+     "eps_max_pct": 0.0310506,
      "mode": "hogging/diagonal"
     },
     "longitudinal, drive 2 passing": {
-     "eps_max_pct": 0.0309609,
+     "eps_max_pct": 0.0310506,
      "mode": "hogging/diagonal"
     },
     "transverse, both drives": {
@@ -892,7 +892,7 @@
   {
    "K": 0.45,
    "VL_pct": 1.0,
-   "above_tunnel": false,
+   "above_tunnel": true,
    "action": "None: low risk at Stage 2",
    "axis_depth_m": 23.2,
    "cases": {
@@ -1023,7 +1023,7 @@
   {
    "K": 0.45,
    "VL_pct": 0.7,
-   "above_tunnel": false,
+   "above_tunnel": true,
    "action": "Stage 3 detailed evaluation (S1 Section 14.3.6); outside this study",
    "axis_depth_m": 25.7,
    "cases": {
@@ -1321,11 +1321,11 @@
    "axis_depth_m": 25.2,
    "cases": {
     "longitudinal, drive 1 passing": {
-     "eps_max_pct": 0.0072242,
+     "eps_max_pct": 0.00724513,
      "mode": "hogging/diagonal"
     },
     "longitudinal, drive 2 passing": {
-     "eps_max_pct": 0.0072242,
+     "eps_max_pct": 0.00724513,
      "mode": "hogging/diagonal"
     },
     "transverse, both drives": {
@@ -1402,7 +1402,7 @@
   {
    "K": 0.45,
    "VL_pct": 0.23,
-   "above_tunnel": false,
+   "above_tunnel": true,
    "action": "None: negligible at Stage 1",
    "axis_depth_m": 23.2,
    "cases": {
@@ -1527,6 +1527,108 @@
    "stage2_category": 0,
    "structure": "masonry",
    "zone": "Z3"
+  }
+ ],
+ "sagging_compression_variant": [
+  {
+   "action": "None: low risk at Stage 2",
+   "action_variant": "None: low risk at Stage 2",
+   "eps_max_pct": 0.0302497,
+   "eps_max_pct_variant": 0.0302497,
+   "governing_mode_variant": "hogging/bending",
+   "id": "B01",
+   "stage2_category": 0,
+   "stage2_category_variant": 0
+  },
+  {
+   "action": "None: low risk at Stage 2",
+   "action_variant": "None: low risk at Stage 2",
+   "eps_max_pct": 0.0253674,
+   "eps_max_pct_variant": 0.0253674,
+   "governing_mode_variant": "hogging/diagonal",
+   "id": "B02",
+   "stage2_category": 0,
+   "stage2_category_variant": 0
+  },
+  {
+   "action": "None: negligible at Stage 1",
+   "action_variant": "None: negligible at Stage 1",
+   "eps_max_pct": 0.0179254,
+   "eps_max_pct_variant": 0.0179254,
+   "governing_mode_variant": "hogging/bending",
+   "id": "B03",
+   "stage2_category": 0,
+   "stage2_category_variant": 0
+  },
+  {
+   "action": "None: low risk at Stage 2",
+   "action_variant": "None: low risk at Stage 2",
+   "eps_max_pct": 0.0315939,
+   "eps_max_pct_variant": 0.0315939,
+   "governing_mode_variant": "hogging/bending",
+   "id": "B05",
+   "stage2_category": 0,
+   "stage2_category_variant": 0
+  },
+  {
+   "action": "Stage 3 detailed evaluation (S1 Section 14.3.6); outside this study",
+   "action_variant": "Stage 3 detailed evaluation (S1 Section 14.3.6); outside this study",
+   "eps_max_pct": 0.0792513,
+   "eps_max_pct_variant": 0.0792513,
+   "governing_mode_variant": "hogging/bending",
+   "id": "B06",
+   "stage2_category": 2,
+   "stage2_category_variant": 2
+  },
+  {
+   "action": "None: low risk at Stage 2",
+   "action_variant": "None: low risk at Stage 2",
+   "eps_max_pct": 0.0542574,
+   "eps_max_pct_variant": 0.0581743,
+   "governing_mode_variant": "sagging/diagonal",
+   "id": "B07",
+   "stage2_category": 1,
+   "stage2_category_variant": 1
+  },
+  {
+   "action": "Stage 3 detailed evaluation (S1 Section 14.3.6); outside this study",
+   "action_variant": "Stage 3 detailed evaluation (S1 Section 14.3.6); outside this study",
+   "eps_max_pct": 0.0980856,
+   "eps_max_pct_variant": 0.0980856,
+   "governing_mode_variant": "hogging/bending",
+   "id": "B09",
+   "stage2_category": 2,
+   "stage2_category_variant": 2
+  },
+  {
+   "action": "None: low risk at Stage 2",
+   "action_variant": "None: low risk at Stage 2",
+   "eps_max_pct": 0.0730649,
+   "eps_max_pct_variant": 0.0730649,
+   "governing_mode_variant": "hogging/diagonal",
+   "id": "B10",
+   "stage2_category": 1,
+   "stage2_category_variant": 1
+  },
+  {
+   "action": "Stage 3 detailed evaluation (S1 Section 14.3.9, poor existing condition); outside this study",
+   "action_variant": "Stage 3 detailed evaluation (S1 Section 14.3.9, poor existing condition); outside this study",
+   "eps_max_pct": 0.0560234,
+   "eps_max_pct_variant": 0.0952673,
+   "governing_mode_variant": "sagging/bending",
+   "id": "B11",
+   "stage2_category": 1,
+   "stage2_category_variant": 2
+  },
+  {
+   "action": "None: negligible at Stage 1",
+   "action_variant": "None: negligible at Stage 1",
+   "eps_max_pct": 0.00010913,
+   "eps_max_pct_variant": 0.00010913,
+   "governing_mode_variant": "hogging/bending",
+   "id": "B13",
+   "stage2_category": 0,
+   "stage2_category_variant": 0
   }
  ]
 }

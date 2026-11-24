@@ -22,8 +22,8 @@ imitate a consultant's design report.
 
 ## Headline results
 
-- **Sources first.** 124 statements were recorded with a locator and a supporting quotation from
-  13 public documents opened on 2026-11-24; 111 are marked VERIFIED (the quotation was
+- **Sources first.** 128 statements were recorded with a locator and a supporting quotation from
+  13 public documents opened on 2026-11-24; 115 are marked VERIFIED (the quotation was
   matched against the text of the opened document) and 13 UNVERIFIED (primary papers that could not
   be opened and are relied on only as reported by an opened source). See [docs/reference_sheet.md](docs/reference_sheet.md).
   The current LTA edition is Revision A3 (December 2025); it sends a building to detailed evaluation from
@@ -42,18 +42,25 @@ imitate a consultant's design report.
   higher is at most 1.6% (building B09); the chance that volume loss exceeds the design
   value is 0.04% to 0.27% depending on the ground zone. These probabilities
   depend on an assumed distribution shape and exclude stoppages; they are not risk figures for any project.
-- **What drives the answer.** Volume loss dominates the sensitivity study, then the trough width parameter, then
-  tunnel depth. For building B06 the maximum tensile strain moves from 0.005% to
-  0.032% across the 5th to 95th percentile of volume loss. The sensitivity indices for building form
-  and condition can decide the outcome on their own: building B06 is "slight" or worse in every sample because
-  of its structural-form index, whatever the ground does.
+- **What drives the answer.** In the sensitivity study for building B06, volume loss dominates, then the trough width parameter K, then tunnel depth. Its
+  maximum tensile strain moves from 0.005% to 0.032% across the 5th to 95th percentile
+  of volume loss. The sensitivity indices for building form and condition can decide the outcome on their own:
+  building B06 is "slight" or worse in every sample because of its structural-form index, whatever the ground does.
+- **A choice the method leaves open.** Eq. 9 and 10 of Mair, Taylor and Burland (1996) let a compressive average
+  horizontal strain in a sagging span offset the bending strain. Setting it to zero instead, a cautious reading,
+  raises building B11 from Stage 2 category 1 to 2 and changes no next step (B11 already goes to Stage 3 detailed evaluation for another reason). The largest strain changes for 2 of 10 buildings (table below).
 - **Existing tunnel above the drive (SYNTHETIC).** Free-field settlement at the invert level of an invented
   existing tunnel is 22.1 mm on the design basis, above the 15 mm allowable total movement in
-  LTA's Code of Practice for Railway Protection, and 5.1 mm at the mean observed volume loss. This is a
-  ground-movement proxy; the structure is not modelled.
-- **Monitoring.** A notional plan after LTA's Chapter 13 gives 74 Type D points, 12 Type E arrays
-  (232 points), 1 Type F array and 36 building points, each with an alert and a
-  work suspension level. The alert factor of 0.7 is an ASSUMPTION.
+  LTA's Code of Practice for Railway Protection, and the steepest gradient along it, 1:601, is
+  steeper than the 1:1000 differential limit. At the characteristic volume loss of the Singapore records the
+  figures are 11.1 mm and 1:1202; at the mean, 5.1 mm. This is a ground-movement proxy;
+  the structure is not modelled.
+- **Monitoring.** A notional plan after LTA's Chapter 13 gives 74 Type D points, 16 Type E arrays
+  (312 points), 1 Type F array and 36 building points, each with an alert and a
+  work suspension level. 6 buildings in use have part of a tunnel under them, so each is monitored in real
+  time and gets Type E arrays about 25 m and 50 m before it (11 such arrays; B01 is too close to the start of the drive for the second). For B02 and B06 only the edge
+  of a tunnel is under the footprint; the CDC wording ("directly or partially underneath") still covers them. The
+  alert factor of 0.7 is an ASSUMPTION.
 - **Back-analysis.** From 22 SYNTHETIC marker readings with 1 mm noise, the fit returns volume
   loss 2.19% (95% interval 2.12 to 2.26) and K 0.411 (0.395 to 0.426) for a
   true 2.2% and 0.42. No marker reaches the work suspension level, yet the fitted trough is
@@ -69,9 +76,11 @@ imitate a consultant's design report.
 - **A bug the cross-check caught.** The first draft of the Excel workbook returned a settlement of about
   1,800 km: in Excel `-x^2` means `(-x)^2`. The test that recalculates the workbook and compares it with Python
   found it.
-- **Tests.** 169 tests; hand-written mutation testing killed 108 of 117
-  planted errors on the first run and (not yet run) of (not yet run) after tests were added
-  ([results/mutation.json](results/mutation.json)).
+- **Tests.** 199 tests. Hand-written mutation testing (one plausible error planted at a time, such as a
+  wrong sign, i in place of z0 or the neutral axis in the wrong place) killed 108 of
+  117 on the first run. The final review added 42 mutants, of which
+  40 were killed on their first run; after tests were written for the survivors,
+  (not yet run) of all (not yet run) are killed ([results/mutation.json](results/mutation.json)).
 
 ![Plan of the SYNTHETIC alignment with design-basis settlement contours and building categories](docs/figures/fig3_plan.png)
 
@@ -80,7 +89,7 @@ imitate a consultant's design report.
 | Output | File |
 |---|---|
 | Four-page technical note (method, verification, results, limits) | [docs/technical_note.pdf](docs/technical_note.pdf) |
-| Sourced reference sheet (124 statements with quotations) | [docs/reference_sheet.md](docs/reference_sheet.md), [data/facts.csv](data/facts.csv) |
+| Sourced reference sheet (128 statements with quotations) | [docs/reference_sheet.md](docs/reference_sheet.md), [data/facts.csv](data/facts.csv) |
 | Sources, access dates and terms | [DATA_SOURCES.md](DATA_SOURCES.md) |
 | Formula-by-formula audit against the sources | [docs/formula_audit.md](docs/formula_audit.md) |
 | Excel workbook with live formulas (trough and one Stage 2 check) | [workbook/trough_and_stage2.xlsx](workbook/trough_and_stage2.xlsx) |
@@ -106,8 +115,9 @@ earth pressure balance (a closed-face TBM type); OA, Old Alluvium; KF, Kallang F
    heritage features and condition are added (CDC Section 14.3.10).
 4. **Uncertainty.** Volume loss is sampled from a lognormal matched to the published mean and 95% value for each
    ground type; K is sampled across a stated range.
-5. **Monitoring.** Array types and spacings follow CDC Chapter 13. The work suspension level is the design-basis
-   prediction; the alert level is a stated fraction of it.
+5. **Monitoring.** Array types and spacings follow CDC Chapter 13. A building counts as having a tunnel under it
+   when any part of the excavated width is under its footprint (CDC Section 13.4.9). The work suspension level is
+   the design-basis prediction; the alert level is a stated fraction of it.
 6. **Back-analysis.** Volume loss and K are estimated by least squares from marker readings, with confidence
    intervals, and compared with the prediction.
 
@@ -181,6 +191,19 @@ Design basis means the typical K and V of CDC Table 14.1 for the ground zone: Ol
 "Stage 3" and "pile assessment" are the next steps the CDC requires; neither is done here. For piled buildings
 and buildings on mixed foundations the table gives only the free-field settlement and slope at the footprint.
 
+### Compressive strain in sagging spans
+
+Mair, Taylor and Burland (1996) combine the average horizontal strain with the bending and diagonal strains
+(Eq. 9 and 10) and note that the largest combined tensile strain "will usually occur in the hogging zone, where
+the horizontal strains are tensile". Taken as written, the equations let compression in a sagging span reduce the
+total, and that is what the screening above does. The table repeats the design-basis Stage 2 check with the
+compressive average strain set to zero in sagging spans. Only buildings whose result changes are listed.
+
+| Building | Max tensile strain as written (%) | With compression in sagging set to zero (%) | Governing mode then | Stage 2 category | Next step |
+|---|---|---|---|---|---|
+| B07 | 0.054 | 0.058 | sagging/diagonal | 1 (unchanged) | unchanged |
+| B11 | 0.056 | 0.095 | sagging/bending | 1 to 2 | unchanged |
+
 ### Design basis against observed volume loss
 
 | Building | V design / characteristic / mean (%) | Max settlement (mm) | Max tensile strain (%) | Stage 2 category |
@@ -212,7 +235,7 @@ and buildings on mixed foundations the table gives only the free-field settlemen
 | B08 | Z2 | 1.8 / 4.5 / 11.4 | 7.99 (7.47 to 8.54) | not screened | not screened | not screened |
 | B09 | Z3 | 2.0 / 5.2 / 13.4 | 13.09 (12.44 to 13.77) | 1.58 (1.35 to 1.84) | 0.18 (0.11 to 0.28) | 0.18 (0.11 to 0.28) |
 | B10 | Z3 | 2.0 / 5.2 / 13.5 | 13.31 (12.66 to 13.99) | 0.44 (0.33 to 0.59) | 0.03 (0.01 to 0.09) | 0.03 (0.01 to 0.09) |
-| B11 | Z3 | 3.4 / 8.8 / 22.7 | 41.05 (40.09 to 42.02) | 0.06 (0.03 to 0.13) | 0.00 (0.00 to 0.04) | 0.06 (0.03 to 0.13) |
+| B11 | Z3 | 3.4 / 8.8 / 22.7 | 41.05 (40.09 to 42.02) | 0.07 (0.03 to 0.14) | 0.00 (0.00 to 0.04) | 0.07 (0.03 to 0.14) |
 | B12 | Z3 | 0.3 / 0.8 / 2.3 | 0.00 (0.00 to 0.04) | not screened | not screened | not screened |
 | B13 | Z3 | 0.0 / 0.0 / 0.2 | 0.00 (0.00 to 0.04) | 0.00 (0.00 to 0.04) | 0.00 (0.00 to 0.04) | 0.00 (0.00 to 0.04) |
 
@@ -242,10 +265,10 @@ Building B06: base maximum tensile strain 0.0127% at V 0.60%, K 0.525.
 | Item | Number | Basis |
 |---|---|---|
 | Type D ground settlement points | 74 | CDC Cl. 13.4.2.1 a): every 25 m of each tunnel |
-| Type E arrays (lines of settlement points across the tunnels) | 12 arrays, 232 points | CDC Cl. 13.4.2.1 b): every 200 m; Section 13.4.9: about 25 m and 50 m before each building in use with a tunnel under it |
+| Type E arrays (lines of settlement points across the tunnels) | 16 arrays, 312 points | CDC Cl. 13.4.2.1 b): every 200 m; Section 13.4.9: about 25 m and 50 m before each building in use with any part of a tunnel under it |
 | Type F arrays (with subsurface instruments) | 1 | CDC Cl. 13.4.2.1 c): every 1000 m |
 | Building settlement points | 36 | CDC Cl. 13.4.7.1; points at facade ends, predicted inflexion points and the deepest point (ASSUMPTION) |
-| Buildings monitored in real time | 4 (B01, B04, B07, B11) | CDC Section 13.4.9: in use, tunnel directly underneath |
+| Buildings monitored in real time | 6 (B01, B02, B04, B06, B07, B11) | CDC Section 13.4.9: in use, with any part of a tunnel directly or partially underneath |
 | Buildings with tensile strain monitoring | 0 | CDC Cl. 13.4.7.2: predicted tensile strain above 0.1% |
 
 The work suspension level of each point is the settlement predicted with the design-basis K and V, following
@@ -279,8 +302,8 @@ Estimators compared on 300 repeated SYNTHETIC arrays (true V 2.2%, K 0.42):
 
 The method assumes the building has no stiffness and follows the free-field ground. That has a direction:
 
-- **It over-predicts for most buildings.** The CDC calls Stage 2 "a conservative assumption as the inherent
-  stiffness of buildings will reduce both the deflection ratio and horizontal strains"; Mair, Taylor and Burland
+- **It over-predicts for most buildings.** The CDC calls Stage 2 "a conservative assumption" because the
+  stiffness of a building reduces both the deflection ratio and the horizontal strains; Mair, Taylor and Burland
   (1996) call it "usually very conservative". Buildings on strip footings or rafts are likely to pick up very
   little horizontal strain. So a Stage 2 category is an upper estimate of possible damage, which is what a
   screening step should give, and it is not a prediction of damage.
@@ -325,7 +348,9 @@ SYNTHETIC (invented for this study).
 | Design K and V by ground type: Old Alluvium (OA): K 0.45, V 1.0%; Mixed face: Old Alluvium with Kallang Formation: K 0.45, V 3.0%; Kallang Formation (KF): K 0.5, V 3.0% | REAL | S1 Table 14.1 |
 | Observed volume loss by ground type (mean, 95% characteristic value, upper bound) and best-fit K | REAL | S5 Table 2 |
 | Array types and spacings, tensile strain monitoring threshold 0.1%, definitions of the review levels | REAL | S1 Chapter 13 |
-| Allowable total movement of an existing bored tunnel, 15 mm | REAL | S2 Table 2(b) |
+| Allowable movement of an existing bored tunnel: 15 mm total; differential 15 mm or 1:1000, whichever is lesser (only the 1:1000 gradient is checked) | REAL | S2 Table 2(b) |
+| A tunnel counts as under a building when any part of its excavated width is under the footprint | REAL | S1 Section 13.4.9 ("directly or partially underneath") |
+| Compressive average strain in sagging spans offsets bending, as Eq. 9 and 10 are written; a variant without the offset is reported | ASSUMPTION | S3 section 4.3 gives the equations but no rule for compression |
 | E/G 2.6 (masonry) and 12.5 (framed), Poisson's ratio 0.3 | REAL | S3 sections 4.2, 4.3 and 4.5 |
 | Lognormal parameters of volume loss | DERIVED | From the S5 mean and 95% value for each ground type |
 | Review levels of each instrument | DERIVED | Design-basis prediction and the alert factor |
@@ -356,14 +381,17 @@ SYNTHETIC (invented for this study).
 ```
 python -m venv .venv
 .venv/Scripts/python -m pip install -r requirements.txt     (Linux or macOS: .venv/bin/python)
-python -m tunnelscreen.pipeline          (rebuild results/, figures and the workbook; about three minutes)
+python -m tunnelscreen.pipeline          (rebuild results/, figures and the workbook; about two minutes)
 python scripts/build_docs.py             (README, DATA_SOURCES and reference sheet)
 python scripts/build_note.py             (four-page technical note)
-python -m pytest -q                      (169 tests)
-python scripts/mutate.py --record final  (mutation testing)
+python -m pytest -q                      (199 tests, about a minute)
+python scripts/mutate.py --record final  (mutation testing, about half an hour)
 ```
 
 Everything runs offline from the committed inputs. The cited papers and standards are not in the repository.
+`python -m pytest -q -m golden` runs only the drift tests, which rebuild the results, tables, README, technical note
+and workbook in memory and compare them with the committed files; `-m "not golden"` runs the rest, which is what
+the mutation testing uses.
 
 ## Repository layout
 

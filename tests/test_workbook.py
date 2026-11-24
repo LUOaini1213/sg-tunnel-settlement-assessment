@@ -1,9 +1,11 @@
-"""The Excel workbook is recalculated from its formulas and compared with the Python engine."""
-import math
-from pathlib import Path
+"""The Excel workbook is recalculated from its formulas and compared with the Python engine.
 
-import numpy as np
+The checks run on a workbook freshly written by the generator, so that an error in a formula is
+caught by the comparison with Python. A separate golden test checks that the committed file is
+what the generator writes.
+"""
 import openpyxl
+import numpy as np
 import pytest
 
 from tunnelscreen import building as bld
@@ -12,29 +14,58 @@ from tunnelscreen import pipeline
 from tunnelscreen import screening as sc
 from tunnelscreen import workbook as wbk
 
-PATH = pipeline.WORKBOOK_PATH
+
+#: A second set of inputs whose facade crosses the whole trough of the first drive, so that all
+#: three spans and the 2.5 i limit are exercised (the pipeline's building has two spans).
+WIDE = dict(D=6.6, z0=22.0, K=0.5, VL=1.5, y0_first=-7.5, y0_second=7.5, second_factor=1.3, facade_start=-50.0,
+            facade_end=40.0, H=9.0, e_over_g=2.6, nu=0.3, building_label="a wide test facade (SYNTHETIC)")
+_built, _recalculated = {}, {}
 
 
-@pytest.fixture(scope="module")
-def book():
-    return openpyxl.load_workbook(PATH)  # formulas as text
+def _build(kind, tmp_path_factory):
+    if kind not in _built:
+        d = tmp_path_factory.mktemp(kind)
+        _built[kind] = pipeline.build_workbook(d / "fresh.xlsx") if kind == "pipeline" else wbk.build(d / "wide.xlsx", **WIDE)
+    return _built[kind]
 
 
-@pytest.fixture(scope="module")
-def calc():
+def _recalc(path):
     """Every cell value after recalculating the workbook with the `formulas` package."""
-    import formulas
+    if path not in _recalculated:
+        import formulas
 
-    sol = formulas.ExcelModel().loads(str(PATH)).finish().calculate()
-    values = {}
-    for key, rng in sol.items():
-        sheet, _, cell = key.rpartition("!")
-        sheet = sheet.strip("'").split("]")[-1].upper()
-        v = rng.value
-        if ":" in cell:
-            continue
-        values[(sheet, cell)] = v[0, 0] if hasattr(v, "shape") else v
+        sol = formulas.ExcelModel().loads(str(path)).finish().calculate()
+        values = {}
+        for key, rng in sol.items():
+            sheet, _, cell = key.rpartition("!")
+            sheet = sheet.strip("'").split("]")[-1].upper()
+            v = rng.value
+            if ":" in cell:
+                continue
+            values[(sheet, cell)] = v[0, 0] if hasattr(v, "shape") else v
+        _recalculated[path] = values
+    values = _recalculated[path]
     return lambda sheet, cell: values[(sheet.upper(), cell)]
+
+
+@pytest.fixture(scope="module", params=["pipeline", "wide"])
+def path(request, tmp_path_factory):
+    return _build(request.param, tmp_path_factory)
+
+
+@pytest.fixture(scope="module")
+def book(path):
+    return openpyxl.load_workbook(path)  # formulas as text
+
+
+@pytest.fixture(scope="module")
+def calc(path):
+    return _recalc(path)
+
+
+@pytest.fixture(scope="module")
+def pipeline_path(tmp_path_factory):
+    return _build("pipeline", tmp_path_factory)
 
 
 def _inputs(book):
@@ -43,8 +74,8 @@ def _inputs(book):
                 factor=ws["B10"].value, a=s2["B4"].value, b=s2["B5"].value, H=s2["B6"].value, eg=s2["B7"].value, nu=s2["B8"].value)
 
 
-def test_workbook_inputs_are_the_scenario_values(book, scn, by_id):
-    i = _inputs(book)
+def test_workbook_inputs_are_the_scenario_values(pipeline_path, scn, by_id):
+    i = _inputs(openpyxl.load_workbook(pipeline_path))
     b = by_id[pipeline.WORKBOOK_BUILDING]
     ts = sc.tunnels_at(scn, b.chainage)
     assert (i["D"], i["z0"], i["K"], i["VL"], i["y1"], i["y2"]) == (ts[0].D, ts[0].z0, ts[0].K, ts[0].VL, ts[0].y0, ts[1].y0)
@@ -110,24 +141,31 @@ def test_stage2_sheet_matches_python(book, calc):
     assert calc("Stage2", "H8") == bld.CATEGORY_NAMES[r.category]
 
 
-def test_stage2_result_matches_the_pipeline_result(calc, scn, by_id):
+def test_stage2_result_matches_the_pipeline_result(pipeline_path, scn, by_id):
     b = by_id[pipeline.WORKBOOK_BUILDING]
     cases = sc.stage2_cases(b, sc.tunnels_at(scn, b.chainage), include_longitudinal=False, n_grid=wbk.N_GRID)
-    assert calc("Stage2", "H5") == pytest.approx(cases["transverse, first drive only"][0], rel=1e-6)
+    assert _recalc(pipeline_path)("Stage2", "H5") == pytest.approx(cases["transverse, first drive only"][0], rel=1e-6)
 
 
-def test_committed_workbook_is_what_the_generator_writes(book, tmp_path, scn, by_id):
-    b = by_id[pipeline.WORKBOOK_BUILDING]
-    ts = sc.tunnels_at(scn, b.chainage)
-    fresh_path = wbk.build(tmp_path / "fresh.xlsx", D=ts[0].D, z0=ts[0].z0, K=ts[0].K, VL=ts[0].VL, y0_first=ts[0].y0,
-                           y0_second=ts[1].y0, second_factor=scn["alignment"]["second_tunnel_vl_factor"], facade_start=b.y_start,
-                           facade_end=b.y_end, H=b.height, e_over_g=b.e_over_g, nu=scn["assumptions"]["poisson_ratio"]["value"],
-                           building_label=f"building {b.id} (SYNTHETIC)")
-    fresh = openpyxl.load_workbook(fresh_path)
-    assert fresh.sheetnames == book.sheetnames == ["Inputs", "Trough", "Stage2", "About"]
+def test_wide_facade_has_all_three_spans(tmp_path_factory):
+    calc = _recalc(_build("wide", tmp_path_factory))
+    assert [calc("Stage2", f"{c}15") for c in "BCD"] == [pytest.approx(16.5), pytest.approx(22.0), pytest.approx(16.5)]
+    assert calc("Stage2", "B13") == pytest.approx(-7.5 - 2.5 * 11.0)  # limited by 2.5 i, not by the facade
+
+
+def test_the_generator_is_reproducible(pipeline_path, tmp_path):
+    again = pipeline.build_workbook(tmp_path / "again.xlsx")
+    assert again.read_bytes() == pipeline_path.read_bytes()  # fixed timestamps: same inputs, same file
+
+
+@pytest.mark.golden
+def test_committed_workbook_is_what_the_generator_writes(pipeline_path):
+    book = openpyxl.load_workbook(pipeline_path)
+    committed = openpyxl.load_workbook(pipeline.WORKBOOK_PATH)
+    assert committed.sheetnames == book.sheetnames == ["Inputs", "Trough", "Stage2", "About"]
     for name in book.sheetnames:
-        a = {c.coordinate: c.value for row in book[name].iter_rows() for c in row if c.value is not None}
-        f = {c.coordinate: c.value for row in fresh[name].iter_rows() for c in row if c.value is not None}
+        a = {c.coordinate: c.value for row in committed[name].iter_rows() for c in row if c.value is not None}
+        f = {c.coordinate: c.value for row in book[name].iter_rows() for c in row if c.value is not None}
         assert a == f, name
 
 

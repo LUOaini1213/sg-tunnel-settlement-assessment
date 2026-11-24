@@ -129,8 +129,14 @@ def inflexion_points(profile: Profile, a: float, b: float, n_scan: int = 241) ->
 
 
 def assess_segment(profile: Profile, a: float, b: float, H: float, e_over_g: float, n_grid: int = 81,
-                   nu: float = 0.3, hogging_neutral_axis: str = "bottom") -> Segment:
-    """Strains in one hogging or sagging span [a, b] (S3 sections 4.2 and 4.3)."""
+                   nu: float = 0.3, hogging_neutral_axis: str = "bottom", compression_relief: bool = True) -> Segment:
+    """Strains in one hogging or sagging span [a, b] (S3 sections 4.2 and 4.3).
+
+    With ``compression_relief=True`` (the default, S3 Eq. 9 and 10 as written) a compressive average
+    horizontal strain in a sagging span lowers the total strain. ``False`` sets a compressive
+    average strain to zero in sagging spans; it is offered as a cautious variant for a robustness
+    check, not as a published rule.
+    """
     L = b - a
     xs = np.linspace(a, b, n_grid)
     s = np.asarray(profile.s(xs), dtype=float)
@@ -145,13 +151,16 @@ def assess_segment(profile: Profile, a: float, b: float, H: float, e_over_g: flo
     # average horizontal strain: difference of the end displacements over the span (S3 section 4.3)
     u = np.asarray(profile.u(np.array([a, b])), dtype=float)
     eps_h = float(u[1] - u[0]) / L
+    if not compression_relief and mode == "sagging":
+        eps_h = max(eps_h, 0.0)
     eps_bt = total_bending_strain(eps_b, eps_h)
     eps_dt = total_diagonal_strain(eps_d, eps_h, nu)
     return Segment(a, b, mode, L, delta, dr, eps_h, eps_b, eps_d, eps_bt, eps_dt, max(eps_bt, eps_dt))
 
 
 def assess_facade(profile: Profile, a: float, b: float, H: float, e_over_g: float, n_grid: int = 81,
-                  nu: float = 0.3, hogging_neutral_axis: str = "bottom", min_span: float = 1e-6) -> FacadeResult:
+                  nu: float = 0.3, hogging_neutral_axis: str = "bottom", min_span: float = 1e-6,
+                  compression_relief: bool = True) -> FacadeResult:
     """Stage 2 for one facade spanning [a, b].
 
     The facade is cut at the practical limit of the trough and at each point of inflexion, and each
@@ -165,7 +174,7 @@ def assess_facade(profile: Profile, a: float, b: float, H: float, e_over_g: floa
     segments = []
     for p, q in zip(cuts[:-1], cuts[1:]):
         if q - p > min_span:
-            segments.append(assess_segment(profile, p, q, H, e_over_g, n_grid, nu, hogging_neutral_axis))
+            segments.append(assess_segment(profile, p, q, H, e_over_g, n_grid, nu, hogging_neutral_axis, compression_relief))
     if not segments:
         return FacadeResult(0.0, 0, "outside trough", [])
     worst = max(segments, key=lambda sg: sg.eps_max)

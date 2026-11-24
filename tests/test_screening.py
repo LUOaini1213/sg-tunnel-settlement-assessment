@@ -82,6 +82,45 @@ def test_footprint_extremes_cover_all_three_slopes(scn, by_id):
     assert slope >= transverse
 
 
+def test_footprint_slope_is_the_largest_of_the_three_cases():
+    """Hand-built cases in which each of the three slopes governs in turn (unit tunnel, i = 10 m)."""
+    t = gf.Tunnel(0.0, 20.0, 6.0, 1.5, 0.5)
+    smax, i = gf.s_max(1.5, 6.0, 0.5, 20.0), 10.0
+    b = sc.Building("TX", "test", 0.0, -41.0, -39.0, 10.0, 6.0, "masonry", "shallow", True, 0, 0, 0)
+    # narrow building over the centre line of a lone tunnel: the transient slope at the face governs
+    far = [t.with_(y0=-40.0), t.with_(y0=40.0)]
+    _, slope = sc.footprint_extremes(b, far)
+    assert slope == pytest.approx(smax / (i * math.sqrt(2 * math.pi)), rel=1e-6)
+    ys = np.linspace(-41.0, -39.0, 201)
+    assert slope > 3 * float(np.abs(gf.slope(ys, far)).max())
+    # building centred between twin tunnels 15 m apart: the first drive alone gives the steepest slope
+    mid = sc.Building("TY", "test", 0.0, -2.0, 2.0, 10.0, 6.0, "masonry", "shallow", True, 0, 0, 0)
+    twin = [t.with_(y0=-7.5), t.with_(y0=7.5)]
+    _, slope = sc.footprint_extremes(mid, twin)
+    first_only = 9.5 / i ** 2 * smax * math.exp(-9.5 ** 2 / (2 * i ** 2))  # at y = 2 m, 9.5 m from the first drive
+    assert slope == pytest.approx(first_only, rel=1e-9)
+    ys = np.linspace(-2.0, 2.0, 201)
+    assert slope > 2 * float(np.abs(gf.slope(ys, twin)).max())
+
+
+def test_tunnel_under_footprint_counts_partial_overlap(scn, by_id):
+    """S1 Section 13.4.9: "where any part of the tunnel is directly or partially underneath any part
+    of a building". The excavated width is y0 +/- D/2 = +/-3.3 m about each centre line."""
+    from dataclasses import replace
+
+    def under(b):
+        return [sc.tunnel_under_footprint(b, t) for t in sc.tunnels_at(scn, b.chainage)]
+
+    assert under(by_id["B01"]) == [True, False]  # centre line of the first drive under the building
+    assert under(by_id["B02"]) == [False, True]  # starts at 10.0 m; the second drive reaches 10.8 m
+    assert under(by_id["B06"]) == [True, False]  # ends at -8.0 m; the first drive reaches -10.8 m
+    assert under(by_id["B07"]) == [True, True]
+    assert under(by_id["B05"]) == [False, False]  # starts at 12.0 m
+    touching = replace(by_id["B02"], y_start=7.5 + 3.3)
+    assert under(touching) == [False, False]  # edge to edge is not underneath
+    assert under(replace(touching, y_start=10.79)) == [False, True]
+
+
 def test_stage2_cases_first_drive_can_govern(scn, by_id):
     """S3 section 2.4: a single tunnel can be worse for a building than the later combination."""
     b = by_id["B07"]
@@ -194,3 +233,27 @@ def test_existing_tunnel_check(scn):
     mean = sc.existing_tunnel_check(scn, 0.23)
     assert mean["max_subsurface_settlement_mm"] == pytest.approx(r["max_subsurface_settlement_mm"] * 0.23)
     assert mean["exceeds_allowable"] is False
+    # gradient along the existing tunnel, from the derivative of the two subsurface troughs
+    ys = np.linspace(-60.0, 60.0, 120001)
+    one = gf.trough_volume(1.0, 6.6) / (math.sqrt(2 * math.pi) * i_z)
+    grad = sum(-(ys - y0) / i_z ** 2 * one * np.exp(-(ys - y0) ** 2 / (2 * i_z ** 2)) for y0 in (-7.5, 7.5))
+    assert r["max_slope_1_in"] == pytest.approx(1.0 / float(np.abs(grad).max()), rel=2e-3)
+    assert r["allowable_differential_1_in"] == 1000.0  # S2 Table 2(b), the gradient part of the limit
+    assert r["max_slope_1_in"] < 1000.0 and r["exceeds_differential_gradient"] is True
+    assert mean["max_slope_1_in"] == pytest.approx(r["max_slope_1_in"] / 0.23, rel=1e-9)
+    assert mean["exceeds_differential_gradient"] is False
+    char = sc.existing_tunnel_check(scn, 0.5)
+    assert char["max_slope_1_in"] > 1000.0 and char["exceeds_differential_gradient"] is False
+
+
+def test_compressive_strain_option_only_affects_sagging_spans():
+    t = gf.Tunnel(0.0, 20.0, 6.0, 1.5, 0.5)
+    prof = sc.transverse_profile([t])
+    sag = bld.assess_facade(prof, -10.0, 10.0, 8.0, 2.6).segments[0]
+    sag0 = bld.assess_facade(prof, -10.0, 10.0, 8.0, 2.6, compression_relief=False).segments[0]
+    assert sag.mode == "sagging" and sag.eps_h < 0 and sag0.eps_h == 0.0
+    assert sag0.eps_bt == pytest.approx(sag0.eps_b) and sag0.eps_bt > sag.eps_bt
+    assert sag0.eps_dt == pytest.approx(sag0.eps_d)
+    hog = bld.assess_facade(prof, 10.0, 25.0, 6.0, 2.6).segments[0]
+    hog0 = bld.assess_facade(prof, 10.0, 25.0, 6.0, 2.6, compression_relief=False).segments[0]
+    assert hog.mode == "hogging" and hog.eps_h > 0 and hog0.eps_max == hog.eps_max

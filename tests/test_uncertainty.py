@@ -50,6 +50,7 @@ def test_sample_zone_statistics_and_correlation(scn):
     assert v1.mean() == pytest.approx(0.55, rel=0.01)
     assert np.percentile(v1, 95) == pytest.approx(1.2, rel=0.015)
     assert k.min() >= 0.45 and k.max() <= 0.65 and k.mean() == pytest.approx(0.55, abs=0.002)
+    assert k.std() == pytest.approx(0.2 / math.sqrt(12), rel=0.01)  # uniform over the whole range
     v1, v2, _ = un.sample_zone(zone, 200_000, np.random.default_rng(1), correlation=0.0)
     assert abs(np.corrcoef(np.log(v1), np.log(v2))[0, 1]) < 0.01
     assert v2.mean() == pytest.approx(0.55, rel=0.01)
@@ -62,7 +63,7 @@ def test_longitudinal_unit_strain_scales_with_volume_loss(scn, by_id):
     unit = un.longitudinal_unit_strain(scn, b, [0.5])
     assert unit.shape == (2, 1) and (unit > 0).all()
     t = sc.tunnels_at(scn, b.chainage, K=0.5, VL=2.0)[0]
-    direct, _ = sc.worst_longitudinal(b, t, n_face=17, n_grid=31)
+    direct, _ = sc.worst_longitudinal(b, t)
     assert direct == pytest.approx(2.0 * unit[0, 0], rel=1e-9)
 
 
@@ -164,3 +165,79 @@ def test_tornado(scn, by_id):
     cases = sc.stage2_cases(b6, sc.tunnels_at(scn, b6.chainage, K=0.525, VL=math.exp(mu)), n_grid=81)
     assert t["base_eps_max_pct"] == pytest.approx(max(c[0] for c in cases.values()) * 100, rel=1e-3)
     assert bld.damage_category(t["base_eps_max_pct"] / 100) == 0
+
+
+def _scenario_copy(scn, **zone3_vl):
+    import copy
+
+    s = copy.deepcopy(scn)
+    s["ground_zones"][2]["observed_vl"].update(zone3_vl)
+    return s
+
+
+def test_probabilities_are_recounted_from_the_samples(scn, by_id):
+    """Every probability is the fraction of samples meeting the criterion (counted again here)."""
+    s = _scenario_copy(scn, mean=1.5, characteristic_95=3.0)  # larger losses so that categories 1 to 3 occur
+    b = by_id["B09"]
+    row = un.monte_carlo(s, [b], 80, seed=4, keep_samples=True)["buildings"]["B09"]
+    sm = row["samples"]
+    cats = np.array([bld.damage_category(e) for e in sm["eps"]])
+    assert len(set(cats)) >= 3
+    for c in (1, 2, 3, 4):
+        assert row["p_stage2_category_at_least"][str(c)]["count"] == int(np.sum(cats >= c))
+        assert row["p_final_category_at_least"][str(c)]["count"] == int(np.sum(np.minimum(5, cats + sum(b.indices)) >= c))
+    fail = (sm["smax"] >= bld.STAGE1_SETTLEMENT_M) | (sm["slope"] >= bld.STAGE1_SLOPE)
+    assert row["p_stage1_not_negligible"]["count"] == int(fail.sum())
+    assert row["settlement_mm"]["p95"] == pytest.approx(float(np.percentile(sm["smax"], 95)) * 1000)
+    assert row["eps_max_pct"]["p50"] == pytest.approx(float(np.median(sm["eps"])) * 100)
+    # the sampled volume losses follow the zone's lognormal; K stays in its range
+    assert sm["k"].min() >= 0.45 and sm["k"].max() <= 0.65 and np.array_equal(sm["vl1"], sm["vl2"])
+
+
+def test_second_drive_factor_is_applied_in_the_monte_carlo(scn, by_id):
+    import copy
+
+    s = copy.deepcopy(scn)
+    s["alignment"]["second_tunnel_vl_factor"] = 1.5
+    b = by_id["B10"]
+    one = un.monte_carlo(scn, [b], 30, seed=9, keep_samples=True)["buildings"]["B10"]["samples"]
+    more = un.monte_carlo(s, [b], 30, seed=9, keep_samples=True)["buildings"]["B10"]["samples"]
+    assert np.allclose(more["vl2"], 1.5 * one["vl2"], rtol=1e-12) and np.array_equal(more["vl1"], one["vl1"])
+    assert np.all(more["smax"] > one["smax"])
+    ts = sc.tunnels_at(s, b.chainage, K=float(more["k"][0]), VL=[float(more["vl1"][0]), float(one["vl2"][0])])
+    assert ts[1].VL == pytest.approx(1.5 * float(one["vl2"][0]))  # same factor as the deterministic engine
+
+
+def test_monte_carlo_includes_the_longitudinal_case(scn, by_id):
+    """B11 is governed by the face passing (design basis); the sampled strain must include that case."""
+    b = by_id["B11"]
+    out = un.monte_carlo(scn, [b], 1, seed=11, n_k_grid=41, keep_samples=True)
+    sm = out["buildings"]["B11"]["samples"]
+    ts = sc.tunnels_at(scn, b.chainage, K=float(sm["k"][0]), VL=[float(sm["vl1"][0]), float(sm["vl2"][0])], second_factor=1.0)
+    cases = sc.stage2_cases(b, ts, n_grid=41)
+    longitudinal = max(v[0] for k, v in cases.items() if k.startswith("longitudinal"))
+    transverse = max(v[0] for k, v in cases.items() if k.startswith("transverse"))
+    assert longitudinal > 1.05 * transverse  # so that leaving the longitudinal case out would be seen
+    assert float(sm["eps"][0]) == pytest.approx(longitudinal, rel=5e-3)
+
+
+def test_tornado_volume_loss_range_is_the_5th_to_95th_percentile(scn, by_id):
+    t = un.tornado(scn, by_id["B06"])
+    mu, sigma = un.lognormal_params(0.70, 1.5)
+    lo, hi = t["VL_range_pct"]
+    assert hi == pytest.approx(1.5, rel=1e-12)  # the 95th percentile is the characteristic value of S5
+    assert lo == pytest.approx(math.exp(mu - un.Z95 * sigma), rel=1e-12)
+    vl = next(b for b in t["bars"] if b["input"].startswith("Volume loss"))
+    assert vl["range"] == f"{lo:.2f}% to {hi:.2f}%"
+
+
+def test_sampled_slope_is_the_deterministic_footprint_slope(scn, by_id):
+    """Each sampled slope and settlement is the Stage 1 value of footprint_extremes for the sampled inputs
+    (that function is checked case by case in test_screening.py)."""
+    for bid in ("B01", "B07", "B11", "B04"):
+        b = by_id[bid]
+        sm = un.monte_carlo(scn, [b], 3, seed=21, keep_samples=True)["buildings"][bid]["samples"]
+        for j in range(3):
+            ts = sc.tunnels_at(scn, b.chainage, K=float(sm["k"][j]), VL=[float(sm["vl1"][j]), float(sm["vl2"][j])], second_factor=1.0)
+            smax, slope = sc.footprint_extremes(b, ts, n=101)
+            assert float(sm["slope"][j]) == pytest.approx(slope, rel=1e-9) and float(sm["smax"][j]) == pytest.approx(smax, rel=1e-9)

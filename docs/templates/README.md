@@ -42,18 +42,25 @@ imitate a consultant's design report.
   higher is at most {{max_p_cat1}}% (building {{max_p_cat1_id}}); the chance that volume loss exceeds the design
   value is {{p_exceed_design_min}}% to {{p_exceed_design_max}}% depending on the ground zone. These probabilities
   depend on an assumed distribution shape and exclude stoppages; they are not risk figures for any project.
-- **What drives the answer.** Volume loss dominates the sensitivity study, then the trough width parameter, then
-  tunnel depth. For building {{tornado_id}} the maximum tensile strain moves from {{tornado_vl_low}}% to
-  {{tornado_vl_high}}% across the 5th to 95th percentile of volume loss. The sensitivity indices for building form
-  and condition can decide the outcome on their own: building B06 is "slight" or worse in every sample because
-  of its structural-form index, whatever the ground does.
+- **What drives the answer.** In the sensitivity study for building {{tornado_id}}, {{tornado_order}}. Its
+  maximum tensile strain moves from {{tornado_vl_low}}% to {{tornado_vl_high}}% across the 5th to 95th percentile
+  of volume loss. The sensitivity indices for building form and condition can decide the outcome on their own:
+  building B06 is "slight" or worse in every sample because of its structural-form index, whatever the ground does.
+- **A choice the method leaves open.** Eq. 9 and 10 of Mair, Taylor and Burland (1996) let a compressive average
+  horizontal strain in a sagging span offset the bending strain. Setting it to zero instead, a cautious reading,
+  {{variant_text}}
 - **Existing tunnel above the drive (SYNTHETIC).** Free-field settlement at the invert level of an invented
   existing tunnel is {{et_design}} mm on the design basis, above the {{et_allow}} mm allowable total movement in
-  LTA's Code of Practice for Railway Protection, and {{et_mean}} mm at the mean observed volume loss. This is a
-  ground-movement proxy; the structure is not modelled.
+  LTA's Code of Practice for Railway Protection, and the steepest gradient along it, 1:{{et_slope_design}}, is
+  steeper than the 1:{{et_diff}} differential limit. At the characteristic volume loss of the Singapore records the
+  figures are {{et_char}} mm and 1:{{et_slope_char}}; at the mean, {{et_mean}} mm. This is a ground-movement proxy;
+  the structure is not modelled.
 - **Monitoring.** A notional plan after LTA's Chapter 13 gives {{n_d}} Type D points, {{n_e}} Type E arrays
   ({{n_e_points}} points), {{n_f}} Type F array and {{n_bldg_points}} building points, each with an alert and a
-  work suspension level. The alert factor of {{alert_factor}} is an ASSUMPTION.
+  work suspension level. {{n_rt}} buildings in use have part of a tunnel under them, so each is monitored in real
+  time and gets Type E arrays about 25 m and 50 m before it ({{approach_note}}). For {{rt_edge_ids}} only the edge
+  of a tunnel is under the footprint; the CDC wording ("directly or partially underneath") still covers them. The
+  alert factor of {{alert_factor}} is an ASSUMPTION.
 - **Back-analysis.** From {{ba_n}} SYNTHETIC marker readings with {{ba_sigma}} mm noise, the fit returns volume
   loss {{ba_vl}}% (95% interval {{ba_vl_lo}} to {{ba_vl_hi}}) and K {{ba_k}} ({{ba_k_lo}} to {{ba_k_hi}}) for a
   true {{ba_true_vl}}% and {{ba_true_k}}. No marker reaches the work suspension level, yet the fitted trough is
@@ -69,9 +76,11 @@ imitate a consultant's design report.
 - **A bug the cross-check caught.** The first draft of the Excel workbook returned a settlement of about
   1,800 km: in Excel `-x^2` means `(-x)^2`. The test that recalculates the workbook and compares it with Python
   found it.
-- **Tests.** {{n_tests}} tests; hand-written mutation testing killed {{mut_first_killed}} of {{mut_first_total}}
-  planted errors on the first run and {{mut_final_killed}} of {{mut_final_total}} after tests were added
-  ([results/mutation.json](results/mutation.json)).
+- **Tests.** {{n_tests}} tests. Hand-written mutation testing (one plausible error planted at a time, such as a
+  wrong sign, i in place of z0 or the neutral axis in the wrong place) killed {{mut_first_killed}} of
+  {{mut_first_total}} on the first run. The final review added {{mut_added_total}} mutants, of which
+  {{mut_added_killed}} were killed on their first run; after tests were written for the survivors,
+  {{mut_final_killed}} of all {{mut_final_total}} are killed ([results/mutation.json](results/mutation.json)).
 
 ![Plan of the SYNTHETIC alignment with design-basis settlement contours and building categories](docs/figures/fig3_plan.png)
 
@@ -106,8 +115,9 @@ earth pressure balance (a closed-face TBM type); OA, Old Alluvium; KF, Kallang F
    heritage features and condition are added (CDC Section 14.3.10).
 4. **Uncertainty.** Volume loss is sampled from a lognormal matched to the published mean and 95% value for each
    ground type; K is sampled across a stated range.
-5. **Monitoring.** Array types and spacings follow CDC Chapter 13. The work suspension level is the design-basis
-   prediction; the alert level is a stated fraction of it.
+5. **Monitoring.** Array types and spacings follow CDC Chapter 13. A building counts as having a tunnel under it
+   when any part of the excavated width is under its footprint (CDC Section 13.4.9). The work suspension level is
+   the design-basis prediction; the alert level is a stated fraction of it.
 6. **Back-analysis.** Volume loss and K are estimated by least squares from marker readings, with confidence
    intervals, and compared with the prediction.
 
@@ -152,6 +162,16 @@ Design basis means the typical K and V of CDC Table 14.1 for the ground zone: {{
 
 "Stage 3" and "pile assessment" are the next steps the CDC requires; neither is done here. For piled buildings
 and buildings on mixed foundations the table gives only the free-field settlement and slope at the footprint.
+
+### Compressive strain in sagging spans
+
+Mair, Taylor and Burland (1996) combine the average horizontal strain with the bending and diagonal strains
+(Eq. 9 and 10) and note that the largest combined tensile strain "will usually occur in the hogging zone, where
+the horizontal strains are tensile". Taken as written, the equations let compression in a sagging span reduce the
+total, and that is what the screening above does. The table repeats the design-basis Stage 2 check with the
+compressive average strain set to zero in sagging spans. Only buildings whose result changes are listed.
+
+{{variant_table}}
 
 ### Design basis against observed volume loss
 
@@ -202,8 +222,8 @@ Estimators compared on {{ec_trials}} repeated SYNTHETIC arrays (true V {{ba_true
 
 The method assumes the building has no stiffness and follows the free-field ground. That has a direction:
 
-- **It over-predicts for most buildings.** The CDC calls Stage 2 "a conservative assumption as the inherent
-  stiffness of buildings will reduce both the deflection ratio and horizontal strains"; Mair, Taylor and Burland
+- **It over-predicts for most buildings.** The CDC calls Stage 2 "a conservative assumption" because the
+  stiffness of a building reduces both the deflection ratio and the horizontal strains; Mair, Taylor and Burland
   (1996) call it "usually very conservative". Buildings on strip footings or rafts are likely to pick up very
   little horizontal strain. So a Stage 2 category is an upper estimate of possible damage, which is what a
   screening step should give, and it is not a prediction of damage.
@@ -249,14 +269,17 @@ SYNTHETIC (invented for this study).
 ```
 python -m venv .venv
 .venv/Scripts/python -m pip install -r requirements.txt     (Linux or macOS: .venv/bin/python)
-python -m tunnelscreen.pipeline          (rebuild results/, figures and the workbook; about three minutes)
+python -m tunnelscreen.pipeline          (rebuild results/, figures and the workbook; about two minutes)
 python scripts/build_docs.py             (README, DATA_SOURCES and reference sheet)
 python scripts/build_note.py             (four-page technical note)
-python -m pytest -q                      ({{n_tests}} tests)
-python scripts/mutate.py --record final  (mutation testing)
+python -m pytest -q                      ({{n_tests}} tests, about a minute)
+python scripts/mutate.py --record final  (mutation testing, about half an hour)
 ```
 
 Everything runs offline from the committed inputs. The cited papers and standards are not in the repository.
+`python -m pytest -q -m golden` runs only the drift tests, which rebuild the results, tables, README, technical note
+and workbook in memory and compare them with the committed files; `-m "not golden"` runs the rest, which is what
+the mutation testing uses.
 
 ## Repository layout
 

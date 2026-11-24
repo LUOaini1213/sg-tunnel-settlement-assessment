@@ -6,6 +6,9 @@ compares every result with the Python engine.
 """
 from __future__ import annotations
 
+import io
+import re
+import zipfile
 from pathlib import Path
 
 from openpyxl import Workbook
@@ -209,4 +212,24 @@ def build(path: Path, *, D: float, z0: float, K: float, VL: float, y0_first: flo
     wb.properties.title = "Greenfield trough and Stage 2 check (SYNTHETIC example)"
     path.parent.mkdir(parents=True, exist_ok=True)
     wb.save(path)
+    _fix_timestamps(path)
     return path
+
+
+STAMP = "2026-11-24T00:00:00Z"
+
+
+def _fix_timestamps(path: Path) -> None:
+    """Rewrite the saved file with fixed dates, so that the same inputs give the same file."""
+    with zipfile.ZipFile(path) as z:
+        items = [(info.filename, z.read(info.filename)) for info in z.infolist()]
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as z:
+        for name, data in items:
+            if name == "docProps/core.xml":
+                data = re.sub(rb"(<dcterms:(created|modified)[^>]*>)[^<]*(</dcterms:)", rb"\g<1>" + STAMP.encode() + rb"\g<3>", data)
+            info = zipfile.ZipInfo(name, date_time=(2026, 11, 24, 0, 0, 0))
+            info.compress_type = zipfile.ZIP_DEFLATED
+            info.external_attr = 0o644 << 16
+            z.writestr(info, data)
+    path.write_bytes(buf.getvalue())

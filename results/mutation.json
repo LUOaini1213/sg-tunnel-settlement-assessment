@@ -59,16 +59,36 @@
    }
   ]
  },
- "n_mutants": 117,
- "tests_collected": 169,
+ "n_mutants": 159,
+ "tests_collected": 199,
  "equivalent": [],
  "files": [
   "tunnelscreen/backanalysis.py",
   "tunnelscreen/building.py",
   "tunnelscreen/greenfield.py",
   "tunnelscreen/monitoring.py",
+  "tunnelscreen/pipeline.py",
   "tunnelscreen/screening.py",
   "tunnelscreen/uncertainty.py",
   "tunnelscreen/workbook.py"
- ]
+ ],
+ "added": {
+  "total": 42,
+  "killed": 40,
+  "mutants": "117 to 158",
+  "survivors": [
+   {
+    "id": 141,
+    "file": "tunnelscreen/uncertainty.py",
+    "original": "max(float(np.max(gf.settlement_one(ys, t))) for t in ts) / (i * gf.SQRT_2PI))",
+    "mutation": "max(float(np.max(gf.settlement_one(ys, t))) for t in ts) / i)"
+   },
+   {
+    "id": 145,
+    "file": "tunnelscreen/monitoring.py",
+    "original": "pts.update(round(v, 2) for v in bld.inflexion_points(prof, lo, hi))",
+    "mutation": "pts.update([])"
+   }
+  ]
+ }
 }

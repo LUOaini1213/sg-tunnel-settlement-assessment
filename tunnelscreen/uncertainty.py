@@ -68,13 +68,17 @@ def longitudinal_unit_strain(scn: dict, b: sc.Building, k_grid: Sequence[float])
     out = np.zeros((2, len(k_grid)))
     for j, k in enumerate(k_grid):
         for d, t in enumerate(sc.tunnels_at(scn, b.chainage, K=float(k), VL=1.0, second_factor=1.0)):
-            out[d, j] = sc.worst_longitudinal(b, t, n_face=17, n_grid=31)[0]
+            out[d, j] = sc.worst_longitudinal(b, t)[0]
     return out
 
 
 def monte_carlo(scn: dict, buildings: Sequence[sc.Building], n: int, seed: int, correlation: float = 1.0,
-                n_k_grid: int = 9) -> dict:
-    """Probability of each damage category for every building on shallow foundations."""
+                n_k_grid: int = 9, keep_samples: bool = False) -> dict:
+    """Probability of each damage category for every building on shallow foundations.
+
+    ``keep_samples=True`` adds the per-sample arrays (volume losses, K, settlement, slope, strain)
+    to each building's row, so that tests can recount the probabilities independently.
+    """
     rng = np.random.default_rng(seed)
     factor = scn["alignment"].get("second_tunnel_vl_factor", 1.0)
     zone_draws = {z["id"]: sample_zone(z, n, rng, correlation) for z in scn["ground_zones"]}
@@ -117,6 +121,8 @@ def monte_carlo(scn: dict, buildings: Sequence[sc.Building], n: int, seed: int, 
             row["eps_max_pct"] = {q: float(np.percentile(eps, p) * 100.0) for q, p in (("p05", 5), ("p50", 50), ("p95", 95))}
             row["p_stage2_category_at_least"] = {str(c): _prob(cats >= c) for c in (1, 2, 3, 4)}
             row["p_final_category_at_least"] = {str(c): _prob(final >= c) for c in (1, 2, 3, 4)}
+        if keep_samples:
+            row["samples"] = {"vl1": vl1, "vl2": vl2, "k": ks, "smax": smax, "slope": slope, "eps": eps}
         results[b.id] = row
     zones = {}
     for z in scn["ground_zones"]:
@@ -136,25 +142,13 @@ def _prob(mask: np.ndarray) -> dict:
 
 # ----------------------------------------------------------------------------- tornado
 def _eps_for(scn: dict, b: sc.Building, K: float, vl: float, depth_offset: float = 0.0, second_factor: float = 1.0,
-             height: float | None = None, e_over_g: float | None = None, hogging_neutral_axis: str = "bottom") -> float:
-    """Largest Stage 2 tensile strain (as strain) for one set of inputs."""
+             height: float | None = None, structure: str | None = None, hogging_neutral_axis: str = "bottom") -> float:
+    """Largest Stage 2 tensile strain (as strain) over all construction cases for one set of inputs."""
     from dataclasses import replace
 
-    bb = replace(b, height=height if height is not None else b.height)
+    bb = replace(b, height=height if height is not None else b.height, structure=structure or b.structure)
     ts = sc.tunnels_at(scn, b.chainage, K=K, VL=vl, depth_offset=depth_offset, second_factor=second_factor)
-    eg = e_over_g if e_over_g is not None else bb.e_over_g
-    vals = []
-    for group in (ts[:1], ts):
-        vals.append(bld.assess_facade(sc.transverse_profile(group), bb.y_start, bb.y_end, bb.height, eg,
-                                      hogging_neutral_axis=hogging_neutral_axis).eps_max)
-    for t in ts:
-        i = gf.trough_width(t.K, t.z0)
-        x0, x1 = bb.chainage - bb.along_length / 2.0, bb.chainage + bb.along_length / 2.0
-        for y in sc.longitudinal_offsets(bb, t):
-            for xf in np.linspace(x0 - 2.5 * i, x1 + 2.5 * i, 25):
-                vals.append(bld.assess_facade(sc.longitudinal_profile(t, y, float(xf)), x0, x1, bb.height, eg,
-                                              n_grid=41, hogging_neutral_axis=hogging_neutral_axis).eps_max)
-    return max(vals)
+    return max(c[0] for c in sc.stage2_cases(bb, ts, hogging_neutral_axis=hogging_neutral_axis).values())
 
 
 def tornado(scn: dict, b: sc.Building) -> dict:
@@ -184,11 +178,12 @@ def tornado(scn: dict, b: sc.Building) -> dict:
         ("Building height H", "-20% to +20%",
          _eps_for(scn, b, k_mid, vl_med, height=0.8 * b.height), _eps_for(scn, b, k_mid, vl_med, height=1.2 * b.height)),
         ("E/G of the equivalent beam", "2.6 (masonry) to 12.5 (framed)",
-         _eps_for(scn, b, k_mid, vl_med, e_over_g=2.6), _eps_for(scn, b, k_mid, vl_med, e_over_g=12.5)),
+         _eps_for(scn, b, k_mid, vl_med, structure="masonry"), _eps_for(scn, b, k_mid, vl_med, structure="framed")),
         ("Neutral axis in hogging", "bottom edge to mid-height",
          _eps_for(scn, b, k_mid, vl_med, hogging_neutral_axis="bottom"), _eps_for(scn, b, k_mid, vl_med, hogging_neutral_axis="middle")),
     ]
     rows = [{"input": name, "range": rng, "low_pct": lo * 100.0, "high_pct": hi * 100.0,
              "swing_pct": abs(hi - lo) * 100.0} for name, rng, lo, hi in bars]
     rows.sort(key=lambda r: -r["swing_pct"])
-    return {"building": b.id, "base_eps_max_pct": base * 100.0, "base_VL_pct": vl_med, "base_K": k_mid, "bars": rows}
+    return {"building": b.id, "base_eps_max_pct": base * 100.0, "base_VL_pct": vl_med, "base_K": k_mid,
+            "VL_range_pct": [vl_lo, vl_hi], "bars": rows}

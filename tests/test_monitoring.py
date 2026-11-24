@@ -83,7 +83,8 @@ def test_plan_counts(plan):
 def test_approach_arrays_before_buildings_over_a_tunnel(plan, by_id):
     p, rows = plan
     over = [bid for bid, r in rows.items() if r["above_tunnel"]]
-    assert sorted(over) == ["B01", "B04", "B07", "B11"]
+    # B02 and B06 have only the edge of a tunnel under them; S1 Section 13.4.9 still applies
+    assert sorted(over) == ["B01", "B02", "B04", "B06", "B07", "B11"]
     for bid in over:
         front = by_id[bid].chainage - by_id[bid].along_length / 2
         got = sorted(a["chainage_m"] for a in p["arrays"] if a["reason"].endswith(f"before building {bid}"))
@@ -118,7 +119,7 @@ def test_building_plan_follows_the_cited_rules(plan, by_id, scn):
         assert b["real_time"] is bool(rows[bid]["above_tunnel"] and by_id[bid].in_use and b["in_monitoring_zone"])
         eps = rows[bid]["eps_max_pct"]
         assert b["tensile_strain_monitoring"] is bool(b["in_monitoring_zone"] and eps is not None and eps > 0.1)
-    assert p["counts"]["buildings_real_time"] == 4
+    assert p["counts"]["buildings_real_time"] == 6
 
 
 def test_building_markers_sit_on_ends_inflexions_and_deepest_point(scn, by_id):
@@ -132,5 +133,24 @@ def test_building_markers_sit_on_ends_inflexions_and_deepest_point(scn, by_id):
     for o in offs[1:-1]:
         if abs(o - deepest) >= 0.05:
             assert abs(float(gf.curvature(np.array([o]), ts)[0])) < 1e-7  # a point of inflexion
+    # and every predicted point of inflexion on the facade has a marker
+    from tunnelscreen import building as bld
+
+    roots = bld.inflexion_points(sc.transverse_profile(ts), -12.0, 18.0)
+    assert len(roots) >= 1 and all(any(abs(o - r) < 0.01 for o in offs) for r in roots)
     far = by_id["B03"]  # entirely in one hogging zone: only the two ends
     assert mon.building_marker_offsets(far, sc.tunnels_at(scn, far.chainage)) == [-48.0, -30.0]
+
+
+def test_monitoring_zone_reaches_one_and_a_half_z_beyond_the_outer_tunnel(scn, by_id):
+    assert mon.zone_half_width(20.0, [0.0]) == pytest.approx(30.0)
+    assert mon.zone_half_width(22.0, [-7.5, 7.5]) == pytest.approx(7.5 + 33.0)
+    # a building starting 36 m out at chainage 660 m (Z = 23.2 m): outside 1.5 Z of the alignment
+    # datum but inside 1.5 Z of the second drive, so it is in the zone
+    from dataclasses import replace
+
+    b = replace(by_id["B13"], id="BX", y_start=36.0, y_end=50.0)
+    z0 = sc.axis_depth(scn, b.chainage)
+    assert 1.5 * z0 < 36.0 < 7.5 + 1.5 * z0
+    rows = sc.screen_all(scn, [b], "design")
+    assert mon.instrumentation_plan(scn, [b], rows)["buildings"][0]["in_monitoring_zone"] is True

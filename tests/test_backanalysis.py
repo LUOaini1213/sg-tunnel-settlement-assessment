@@ -148,3 +148,31 @@ def test_synthetic_readings_are_reproducible_and_noisy():
     clean = ba.model_mm(Y, 2.0, 0.45, Z0, D)
     assert not np.allclose(a, clean) and np.abs(a - clean).max() < 5.0
     assert np.array_equal(ba.synthetic_readings(Y, 2.0, 0.45, Z0, D, 0.0, np.random.default_rng(5)), clean)
+
+
+def test_fit_with_the_tunnel_off_the_origin():
+    """Readings over a tunnel whose centre line is 4 m from the array origin."""
+    s = ba.model_mm(Y, 1.8, 0.47, Z0, D, y0=4.0)
+    fit = ba.fit_gaussian(Y, s, Z0, D, sigma_mm=1.0, y0=4.0)
+    assert (fit.VL, fit.K) == (pytest.approx(1.8, rel=1e-6), pytest.approx(0.47, rel=1e-6))
+
+
+def test_smax_comes_only_from_readings_near_the_centre_line():
+    """S5 takes Smax from settlement points within 3 m of the centre line, even if a reading
+    further out happens to be larger."""
+    s = ba.model_mm(Y, 1.0, 0.5, Z0, D, y0=5.5)  # trough centred under the reading at +5.5 m
+    assert float(s.max()) > float(s[Y == 0.0][0])
+    assert ba.fit_loglinear(Y, s, Z0, D)["Smax_mm"] == pytest.approx(float(s[Y == 0.0][0]))
+
+
+def test_departure_chi_square_has_one_degree_of_freedom_per_reading():
+    """The prediction is not fitted to these readings, so the statistic has n degrees of freedom."""
+    from scipy.stats import chi2
+
+    pred = ba.model_mm(Y, 1.0, 0.45, Z0, D)
+    z = math.sqrt(24.0 / Y.size)  # every reading z standard deviations high: chi-square = 24, no single outlier
+    r = ba.departure_test(pred + z, pred, 1.0)
+    assert r["chi2"] == pytest.approx(24.0) and r["dof"] == 11
+    assert r["p_value"] == pytest.approx(float(chi2.sf(24.0, 11)), rel=1e-12)
+    assert 0.01 < r["p_value"] < 0.02 and r["flagged"] is False  # with 9 degrees of freedom it would be flagged
+    assert chi2.sf(24.0, 9) < 0.01
