@@ -129,6 +129,10 @@ def fig_probabilities(mc: dict, design_rows) -> None:
         ax.axhline(lim * 100, color="#757575", lw=0.7, ls="--")
         ax.text(len(ids) - 0.45, lim * 100, name, fontsize=7, va="bottom", color="#757575")
     ax.set_yscale("log")
+    ax.set_ylim(1e-3, 0.6)
+    for k, i in enumerate(ids):
+        if p95[k] < 1e-3:
+            ax.annotate("below scale", (k, 1.15e-3), ha="center", fontsize=7, color="#0d47a1")
     ax.set_xticks(x)
     ax.set_xticklabels(ids)
     ax.set_ylabel("maximum tensile strain (%)")

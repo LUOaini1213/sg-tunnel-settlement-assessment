@@ -1,0 +1,74 @@
+{
+ "first": {
+  "total": 117,
+  "killed": 108,
+  "survivors": [
+   {
+    "id": 52,
+    "file": "tunnelscreen/screening.py",
+    "original": "return s_max, max(slopes)",
+    "mutation": "return s_max, slopes[0]"
+   },
+   {
+    "id": 72,
+    "file": "tunnelscreen/uncertainty.py",
+    "original": "eps[j] = max(e_both, e_first, e_long)",
+    "mutation": "eps[j] = max(e_both, e_first)"
+   },
+   {
+    "id": 73,
+    "file": "tunnelscreen/uncertainty.py",
+    "original": "{str(c): _prob(cats >= c) for c in (1, 2, 3, 4)}",
+    "mutation": "{str(c): _prob(cats > c) for c in (1, 2, 3, 4)}"
+   },
+   {
+    "id": 74,
+    "file": "tunnelscreen/uncertainty.py",
+    "original": "vl2 = vl2 * factor",
+    "mutation": "vl2 = vl2 * 1.0"
+   },
+   {
+    "id": 77,
+    "file": "tunnelscreen/uncertainty.py",
+    "original": "for q in (-Z95, 0.0, Z95))",
+    "mutation": "for q in (-1.0, 0.0, 1.0))"
+   },
+   {
+    "id": 84,
+    "file": "tunnelscreen/monitoring.py",
+    "original": "half_zone = max(abs(y) for y in y0s) + MONITORING_ZONE_FACTOR * z0",
+    "mutation": "half_zone = MONITORING_ZONE_FACTOR * z0"
+   },
+   {
+    "id": 101,
+    "file": "tunnelscreen/backanalysis.py",
+    "original": "return model_mm(y, p[0], p[1], z0, D, y0) - s",
+    "mutation": "return model_mm(y, p[0], p[1], z0, D) - s"
+   },
+   {
+    "id": 105,
+    "file": "tunnelscreen/backanalysis.py",
+    "original": "near = np.abs(y) <= centre_window_m",
+    "mutation": "near = np.abs(y) <= 10.0 * centre_window_m"
+   },
+   {
+    "id": 109,
+    "file": "tunnelscreen/backanalysis.py",
+    "original": "pval = float(chi2.sf(stat, df=z.size))",
+    "mutation": "pval = float(chi2.sf(stat, df=z.size - 2))"
+   }
+  ]
+ },
+ "n_mutants": 117,
+ "tests_collected": 169,
+ "equivalent": [],
+ "files": [
+  "tunnelscreen/backanalysis.py",
+  "tunnelscreen/building.py",
+  "tunnelscreen/greenfield.py",
+  "tunnelscreen/monitoring.py",
+  "tunnelscreen/screening.py",
+  "tunnelscreen/uncertainty.py",
+  "tunnelscreen/workbook.py"
+ ]
+}

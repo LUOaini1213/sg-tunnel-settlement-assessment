@@ -225,7 +225,7 @@ def run(samples: int | None = None, figures: bool = True) -> dict:
                 "characteristic": sc.existing_tunnel_check(scn, sc.zone_at(scn, scn["existing_tunnel"]["chainage_m"])["observed_vl"]["characteristic_95"]),
                 "mean": sc.existing_tunnel_check(scn, sc.zone_at(scn, scn["existing_tunnel"]["chainage_m"])["observed_vl"]["mean"])}
     mc = un.monte_carlo(scn, buildings, n, seed, correlation=a["vl_correlation_between_drives"]["value"])
-    mc_indep = un.monte_carlo(scn, buildings, max(1000, n // 5), seed, correlation=0.0)
+    mc_indep = un.monte_carlo(scn, buildings, n, seed, correlation=0.0)
     shallow_ranked = [r["id"] for r in screening["design"] if r["stage2_applicable"]][:3]
     by_id = {b.id: b for b in buildings}
     tornados = [un.tornado(scn, by_id[i]) for i in shallow_ranked]

@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Generated documents are up to date
+        run: python scripts/build_docs.py --check
+      - name: Tests (published values, hand calculations, workbook recalculation, committed results)
+        run: python -m pytest -q
+      - name: Offline rebuild of results, figures and workbook from the committed inputs
+        run: python -m tunnelscreen.pipeline --samples 500
+      - name: Technical note builds to four pages
+        run: python scripts/build_note.py
+
+  mutation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Every planted error must make a test fail
+        run: python scripts/mutate.py --record ci --require-all

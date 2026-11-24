@@ -71,11 +71,12 @@ def mc(scn, buildings):
     return un.monte_carlo(scn, buildings, 300, seed=7)
 
 
-def test_monte_carlo_is_reproducible(scn, buildings, mc):
-    again = un.monte_carlo(scn, buildings, 300, seed=7)
-    assert again == mc
-    other = un.monte_carlo(scn, buildings, 300, seed=8)
-    assert other["buildings"]["B09"]["eps_max_pct"] != mc["buildings"]["B09"]["eps_max_pct"]
+def test_monte_carlo_is_reproducible(scn, by_id):
+    some = [by_id["B09"], by_id["B04"]]
+    first = un.monte_carlo(scn, some, 120, seed=7)
+    assert un.monte_carlo(scn, some, 120, seed=7) == first
+    other = un.monte_carlo(scn, some, 120, seed=8)
+    assert other["buildings"]["B09"]["eps_max_pct"] != first["buildings"]["B09"]["eps_max_pct"]
 
 
 def test_monte_carlo_structure_and_monotonic_probabilities(mc, buildings):
@@ -119,8 +120,8 @@ def test_monte_carlo_matches_a_direct_recalculation_of_one_sample(scn, by_id):
     assert out["buildings"]["B09"]["settlement_mm"]["p50"] == pytest.approx(smax * 1000, rel=1e-9)
 
 
-def test_zone_exceedance_probabilities(scn, buildings):
-    out = un.monte_carlo(scn, buildings[:1], 20_000, seed=3)
+def test_zone_exceedance_probabilities(scn, by_id):
+    out = un.monte_carlo(scn, [by_id["B12"]], 20_000, seed=3)  # a piled building: no Stage 2 loop, so this is quick
     for z in scn["ground_zones"]:
         row = out["zones"][z["id"]]
         mu, sigma = un.lognormal_params(z["observed_vl"]["mean"], z["observed_vl"]["characteristic_95"])

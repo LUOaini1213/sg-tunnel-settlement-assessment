@@ -5,7 +5,7 @@
   "unverified": 13,
   "verified": 111
  },
- "monte_carlo_samples": 400,
+ "monte_carlo_samples": 10000,
  "python": "3.11",
  "seed": 20261124,
  "workbook_building": "B07"
