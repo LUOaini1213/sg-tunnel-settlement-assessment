@@ -76,11 +76,11 @@ imitate a consultant's design report.
 - **A bug the cross-check caught.** The first draft of the Excel workbook returned a settlement of about
   1,800 km: in Excel `-x^2` means `(-x)^2`. The test that recalculates the workbook and compares it with Python
   found it.
-- **Tests.** 199 tests. Hand-written mutation testing (one plausible error planted at a time, such as a
+- **Tests.** 201 tests. Hand-written mutation testing (one plausible error planted at a time, such as a
   wrong sign, i in place of z0 or the neutral axis in the wrong place) killed 108 of
   117 on the first run. The final review added 42 mutants, of which
   40 were killed on their first run; after tests were written for the survivors,
-  (not yet run) of all (not yet run) are killed ([results/mutation.json](results/mutation.json)).
+  159 of all 159 are killed ([results/mutation.json](results/mutation.json)).
 
 ![Plan of the SYNTHETIC alignment with design-basis settlement contours and building categories](docs/figures/fig3_plan.png)
 
@@ -384,7 +384,7 @@ python -m venv .venv
 python -m tunnelscreen.pipeline          (rebuild results/, figures and the workbook; about two minutes)
 python scripts/build_docs.py             (README, DATA_SOURCES and reference sheet)
 python scripts/build_note.py             (four-page technical note)
-python -m pytest -q                      (199 tests, about a minute)
+python -m pytest -q                      (201 tests, about a minute)
 python scripts/mutate.py --record final  (mutation testing, about half an hour)
 ```
 

@@ -60,7 +60,7 @@
   ]
  },
  "n_mutants": 159,
- "tests_collected": 199,
+ "tests_collected": 201,
  "equivalent": [],
  "files": [
   "tunnelscreen/backanalysis.py",
@@ -90,5 +90,11 @@
     "mutation": "pts.update([])"
    }
   ]
+ },
+ "final": {
+  "total": 159,
+  "killed": 159,
+  "mutants": "0 to 158",
+  "survivors": []
  }
 }
